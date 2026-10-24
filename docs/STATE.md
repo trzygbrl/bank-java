@@ -114,5 +114,51 @@ PROJECT STATE (after Task J-04)
 - Run command: java -cp out BankApp
 - Logic test command: java -ea -cp out LogicTests
 
+PROJECT STATE (after Task J-05)
+- Task: J-05 — Reusable styled components
+- Status: Completed
+- Files: docs/PRD.md, docs/ROADMAP.md, AGENTS.md, CLAUDE.md, README.md, .gitignore, .gitattributes, docs/STATE.md, src/BankApp.java, src/TransactionType.java, src/Transaction.java, src/BankAccount.java, src/AmountResult.java, src/MoneyUtil.java, src/LogicTests.java, src/Theme.java, src/RoundedPanel.java, src/AppButton.java, src/AmountField.java, src/MessageBox.java, src/ViewHeader.java
+- Classes and their public methods now:
+  - BankApp: public static void main(String[] args) (TEMP J-02 logic test and TEMP J-05 component demo remain)
+  - TransactionType: enum values DEPOSIT, WITHDRAWAL; public String getLabel()
+  - Transaction: record components type, amountCentavos, balanceAfterCentavos
+  - BankAccount: public long getBalance(), public void deposit(long amountCentavos), public boolean withdraw(long amountCentavos), public List<Transaction> getTransactions()
+  - AmountResult: public static AmountResult ok(long centavos), public static AmountResult error(String message), public boolean isValid(), public long getCentavos(), public String getErrorMessage(), public long centavos(), public String errorMessage()
+  - MoneyUtil: public static String formatMoney(long centavos), public static AmountResult validateAmount(String text)
+  - LogicTests: public static void main(String[] args)
+  - Theme: public static Font fontBrand(), fontViewTitle(), fontSubtitle(), fontCardTitle(), fontBody(), fontBodyBold(), fontBalance(), public static void applyGlobalDefaults(), public static void enableAntialiasing(Graphics2D g)
+  - RoundedPanel: public RoundedPanel(Color fill, int radius, boolean drawShadowAndBorder)
+  - AppButton: public AppButton(String text, boolean primary), public boolean isPrimary()
+  - AmountField: public String getText(), public void setText(String), public void selectAllAndFocus(), public void addEnterListener(ActionListener), public void addChangeListener(Runnable), public void setAccessibleName(String), public void setErrorState(boolean), public boolean isErrorState()
+  - MessageBox: public void showError(String), public void showSuccess(String), public void clear()
+  - ViewHeader: public ViewHeader(String title, String subtitle), public String getTitle(), public String getSubtitle()
+- Theme constants and components that exist now:
+  - All colors, spacing, radii, heights, sidebar width from J-04
+  - RoundedPanel: rounded rectangle with custom fill and optional soft shadow + border outline (PRD card style)
+  - AppButton: PRIMARY style (filled primary, white text, hover blend 10% white, pressed primaryDark) and OUTLINED style (surface fill, 1px primary border, primary text, hover lavender); 2px focus ring; radius 8, height 44
+  - AmountField: peso prefix, borderless text field, hint "0.00", 1px border normal, 2px primary on focus, error border override; height 44, radius 8
+  - MessageBox: error (errorBg/error) and success (successBg/success) states with 1px border, rounded radius 8, multiline wrapping, ~48px reserved height
+  - ViewHeader: title (fontViewTitle, primaryDeep) above subtitle (fontSubtitle, textMuted)
+- Known problems or deviations from the PRD: none
+- Changes:
+  - Created src/RoundedPanel.java: custom-painted JPanel with rounded corners, fill color, and optional soft shadow + 1px border outline.
+  - Created src/AppButton.java: custom-painted JButton with PRIMARY and OUTLINED styles, hover/pressed state feedback, and 2px keyboard focus ring.
+  - Created src/AmountField.java: composite input with fixed peso prefix, borderless text field, hint text, focus/error border states, and document change listener.
+  - Created src/MessageBox.java: inline feedback area with error/success styles, multiline text wrapping, and stable ~48px reserved height.
+  - Created src/ViewHeader.java: title and subtitle labels with Theme typography.
+  - Updated src/BankApp.java: replaced "Setup OK" label with TEMP component demo showing a RoundedPanel card containing ViewHeader, AmountField, both AppButton styles, and both MessageBox states with interactive wiring.
+  - Updated docs/STATE.md.
+- Validation:
+  - Compile: javac -Xlint:all -encoding UTF-8 -d out src/*.java (succeeded with no errors and no warnings)
+  - Logic tests: java -ea -cp out LogicTests (85 test cases passed, 0 failed, exit code 0)
+  - Run: java -cp out BankApp (TEMP logic test executed; component demo window launched on mint cream background with rounded card, header, amount field with peso prefix and hint, both button styles, and both message box styles visible)
+  - Component verification: automated checks confirmed RoundedPanel shadow insets, AppButton heights and style flags, AmountField getText/setText/errorState/changeListener, MessageBox reserved height and state transitions, ViewHeader title/subtitle text.
+  - Visual verification: hover, pressed, and focus states require manual inspection by the user.
+- Limitations: hover, pressed, and keyboard focus ring states were verified to compile and render but require manual visual inspection
+- Compile command: javac -encoding UTF-8 -d out src/*.java
+- Run command: java -cp out BankApp
+- Logic test command: java -ea -cp out LogicTests
+
+
 
 
