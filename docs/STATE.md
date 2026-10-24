@@ -49,4 +49,34 @@ PROJECT STATE (after Task J-02)
 - Limitations: none
 - Compile command: javac -encoding UTF-8 -d out src/*.java
 - Run command: java -cp out BankApp
+
+PROJECT STATE (after Task J-03)
+- Task: J-03 — MoneyUtil and logic tests
+- Status: Completed
+- Files: docs/PRD.md, docs/ROADMAP.md, AGENTS.md, CLAUDE.md, README.md, .gitignore, .gitattributes, docs/STATE.md, src/BankApp.java, src/TransactionType.java, src/Transaction.java, src/BankAccount.java, src/AmountResult.java, src/MoneyUtil.java, src/LogicTests.java
+- Classes and their public methods now:
+  - BankApp: public static void main(String[] args) (TEMP logic test remains in BankApp.main)
+  - TransactionType: enum values DEPOSIT, WITHDRAWAL; public String getLabel()
+  - Transaction: record components type, amountCentavos, balanceAfterCentavos
+  - BankAccount: public long getBalance(), public void deposit(long amountCentavos), public boolean withdraw(long amountCentavos), public List<Transaction> getTransactions()
+  - AmountResult: public static AmountResult ok(long centavos), public static AmountResult error(String message), public boolean isValid(), public long getCentavos(), public String getErrorMessage(), public long centavos(), public String errorMessage()
+  - MoneyUtil: public static String formatMoney(long centavos), public static AmountResult validateAmount(String text)
+  - LogicTests: public static void main(String[] args)
+- Theme constants and components that exist now: none (skeleton window with "Setup OK" JLabel)
+- Known problems or deviations from the PRD: none
+- Changes:
+  - Created src/AmountResult.java: final class holding validated centavos or error message with static ok(long) and error(String) factory methods and isValid() indicator.
+  - Created src/MoneyUtil.java: constants CURRENCY_SYMBOL ("\u20B1"), MAX_AMOUNT_CENTAVOS (100_000_000_000L), exact PRD Section 10 error message constants, formatMoney(long) with comma thousands grouping loop and integer math, and validateAmount(String) implementing PRD Section 6.5 steps 1 to 5 in exact sequence.
+  - Created src/LogicTests.java: standalone test runner testing formatMoney, validateAmount (all PRD cases, edge cases, and precedence), AmountResult, and BankAccount regression tests.
+  - Updated docs/STATE.md.
+- Validation:
+  - Compile: javac -Xlint:all -encoding UTF-8 -d out src/*.java (succeeded with no errors and no warnings)
+  - Logic tests: java -ea -cp out LogicTests (85 test cases passed, 0 failed, exit code 0)
+  - Run: java -cp out BankApp (TEMP test verified balance 400000, 2 transactions, overdraft rejected, and Simple Bank window launched successfully)
+  - Verified no javax.swing or java.awt imports in src/AmountResult.java, src/MoneyUtil.java, or src/LogicTests.java.
+- Limitations: none
+- Compile command: javac -encoding UTF-8 -d out src/*.java
+- Run command: java -cp out BankApp
+- Logic test command: java -ea -cp out LogicTests
+
 
