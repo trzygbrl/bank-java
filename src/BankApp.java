@@ -5,6 +5,8 @@ import javax.swing.SwingUtilities;
 
 public class BankApp {
     public static void main(String[] args) {
+        Theme.applyGlobalDefaults();
+
         // TEMP: Remove this logic check during Task J-13 cleanup.
         BankAccount account = new BankAccount();
 
@@ -24,6 +26,7 @@ public class BankApp {
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setSize(1000, 680);
             frame.setLocationRelativeTo(null);
+            frame.getContentPane().setBackground(Theme.BACKGROUND);
 
             JLabel label = new JLabel("Setup OK", SwingConstants.CENTER);
             frame.add(label);

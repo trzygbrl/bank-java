@@ -79,4 +79,40 @@ PROJECT STATE (after Task J-03)
 - Run command: java -cp out BankApp
 - Logic test command: java -ea -cp out LogicTests
 
+PROJECT STATE (after Task J-04)
+- Task: J-04 — Theme (colors, fonts, spacing)
+- Status: Completed
+- Files: docs/PRD.md, docs/ROADMAP.md, AGENTS.md, CLAUDE.md, README.md, .gitignore, .gitattributes, docs/STATE.md, src/BankApp.java, src/TransactionType.java, src/Transaction.java, src/BankAccount.java, src/AmountResult.java, src/MoneyUtil.java, src/LogicTests.java, src/Theme.java
+- Classes and their public methods now:
+  - BankApp: public static void main(String[] args) (TEMP logic test remains in BankApp.main)
+  - TransactionType: enum values DEPOSIT, WITHDRAWAL; public String getLabel()
+  - Transaction: record components type, amountCentavos, balanceAfterCentavos
+  - BankAccount: public long getBalance(), public void deposit(long amountCentavos), public boolean withdraw(long amountCentavos), public List<Transaction> getTransactions()
+  - AmountResult: public static AmountResult ok(long centavos), public static AmountResult error(String message), public boolean isValid(), public long getCentavos(), public String getErrorMessage(), public long centavos(), public String errorMessage()
+  - MoneyUtil: public static String formatMoney(long centavos), public static AmountResult validateAmount(String text)
+  - LogicTests: public static void main(String[] args)
+  - Theme: public static Font fontBrand(), public static Font fontViewTitle(), public static Font fontSubtitle(), public static Font fontCardTitle(), public static Font fontBody(), public static Font fontBodyBold(), public static Font fontBalance(), public static void applyGlobalDefaults(), public static void enableAntialiasing(Graphics2D g)
+- Theme constants and components that exist now:
+  - Colors: PRIMARY (#5B4B8A), PRIMARY_DARK (#433670), PRIMARY_DEEP (#2E2552), LAVENDER (#E9E4F7), LAVENDER_MIST (#F3F0FA), BACKGROUND (#F5FFFA), SURFACE (#FFFFFF), MINT (#BFE8D4), SUCCESS (#2E7D5B), SUCCESS_BG (#E3F5EC), ERROR (#B3261E), ERROR_BG (#FDECEA), WITHDRAWAL (#A8324A), TEXT_PRIMARY (#2B2540), TEXT_MUTED (#6B6585), BORDER (#D9D3EC), ON_PRIMARY (#FFFFFF), NAV_TEXT (#E4DEF5)
+  - Spacing: SP_4 (4), SP_8 (8), SP_16 (16), SP_24 (24), SP_32 (32)
+  - Radius: RADIUS_CARD (12), RADIUS_CONTROL (8)
+  - Heights: BUTTON_HEIGHT (44), FIELD_HEIGHT (44), NAV_ITEM_HEIGHT (48), TABLE_ROW_HEIGHT (40)
+  - Sidebar width: SIDEBAR_WIDTH (240)
+  - Components: skeleton window with "Setup OK" JLabel on mint cream (#F5FFFA) content background
+- Known problems or deviations from the PRD: none
+- Changes:
+  - Created src/Theme.java: centralized design tokens (18 exact hex colors from PRD 9.2, spacing scale, corner radii, component heights, sidebar width, font factories with Segoe UI detection and SansSerif fallback, applyGlobalDefaults() for UIManager palette configuration, and enableAntialiasing(Graphics2D)).
+  - Updated src/BankApp.java: added Theme.applyGlobalDefaults() at startup and set the JFrame content pane background to Theme.BACKGROUND (#F5FFFA).
+  - Updated docs/STATE.md.
+- Validation:
+  - Compile: javac -Xlint:all -encoding UTF-8 -d out src/*.java (succeeded with no errors and no warnings)
+  - Logic tests: java -ea -cp out LogicTests (85 test cases passed, 0 failed, exit code 0)
+  - Run: java -cp out BankApp (TEMP logic test executed, Simple Bank JFrame 1000x680 centered on screen launched successfully with mint cream #F5FFFA content area background and centered "Setup OK" label)
+  - Theme verification: verified all 18 hex color values, spacing, radius, height, font sizes/styles, and UIManager keys.
+- Limitations: none
+- Compile command: javac -encoding UTF-8 -d out src/*.java
+- Run command: java -cp out BankApp
+- Logic test command: java -ea -cp out LogicTests
+
+
 
