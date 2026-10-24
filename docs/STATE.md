@@ -22,4 +22,31 @@ PROJECT STATE (after Task J-01)
   - Run: java -cp out BankApp (successfully launched JFrame titled "Simple Bank", dimensions 1000x680, centered on screen, displaying centered JLabel "Setup OK", default close operation EXIT_ON_CLOSE)
 - Limitations: none
 - Compile command: javac -encoding UTF-8 -d out src/*.java
-- Run command: java -cp out BankApp
+- Run command: java -cp out BankApp
+
+PROJECT STATE (after Task J-02)
+- Task: J-02 — Logic model
+- Status: Completed
+- Files: docs/PRD.md, docs/ROADMAP.md, AGENTS.md, CLAUDE.md, README.md, .gitignore, .gitattributes, docs/STATE.md, src/BankApp.java, src/TransactionType.java, src/Transaction.java, src/BankAccount.java
+- Classes and their public methods now:
+  - BankApp: public static void main(String[] args) (TEMP logic test remains in BankApp.main)
+  - TransactionType: enum values DEPOSIT, WITHDRAWAL; public String getLabel()
+  - Transaction: record components type, amountCentavos, balanceAfterCentavos
+  - BankAccount: public long getBalance(), public void deposit(long amountCentavos), public boolean withdraw(long amountCentavos), public List<Transaction> getTransactions()
+- Theme constants and components that exist now: none (skeleton window with "Setup OK" JLabel)
+- Known problems or deviations from the PRD: none
+- Changes:
+  - Created src/TransactionType.java with DEPOSIT and WITHDRAWAL values and getLabel() method.
+  - Created src/Transaction.java record with type, amountCentavos, and balanceAfterCentavos components.
+  - Created src/BankAccount.java with STARTING_BALANCE_CENTAVOS = 500_000L, getBalance(), deposit(long), withdraw(long), and getTransactions() returning Collections.unmodifiableList.
+  - Updated src/BankApp.java with TEMP test block at the start of main before window creation.
+  - Updated docs/STATE.md.
+- Validation:
+  - Compile: javac -Xlint:all -encoding UTF-8 -d out src/*.java (succeeded with no errors and no warnings)
+  - Run: java -cp out BankApp (TEMP test verified: starting balance 500000, after 100000 deposit balance 600000, after 200000 withdraw balance 400000 with 2 transactions recorded in chronological order; overdraft attempt with 99999999 returned false and left balance at 400000 and transaction history unaltered; Simple Bank window launched successfully)
+  - Unmodifiable list verification: attempting modification on account.getTransactions() threw UnsupportedOperationException and left account history unchanged.
+  - Verified logic classes do not import javax.swing or java.awt.
+- Limitations: none
+- Compile command: javac -encoding UTF-8 -d out src/*.java
+- Run command: java -cp out BankApp
+
