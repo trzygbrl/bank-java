@@ -20,6 +20,13 @@ public class RoundedPanel extends JPanel {
     private static final int SHADOW_TOP = 4;
     private static final int SHADOW_BOTTOM = 8;
 
+    /**
+     * Constructs a RoundedPanel with specified background fill, corner radius, and optional shadow/border.
+     *
+     * @param fill the panel background fill color
+     * @param radius corner radius in pixels
+     * @param drawShadowAndBorder true to render soft shadow and 1px border outline, false for flat fill
+     */
     @SuppressWarnings("this-escape")
     public RoundedPanel(Color fill, int radius, boolean drawShadowAndBorder) {
         this.fill = fill;
@@ -28,6 +35,11 @@ public class RoundedPanel extends JPanel {
         setOpaque(false);
     }
 
+    /**
+     * Computes component insets, including padding space for shadow spread when enabled.
+     *
+     * @return insets of the panel
+     */
     @Override
     public Insets getInsets() {
         Insets base = super.getInsets();
@@ -42,6 +54,11 @@ public class RoundedPanel extends JPanel {
         return base;
     }
 
+    /**
+     * Custom painting for soft shadow, rounded background fill, and border outline.
+     *
+     * @param g graphics context
+     */
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g.create();

@@ -79,23 +79,6 @@ PROJECT STATE (after Task J-03)
 - Run command: java -cp out BankApp
 - Logic test command: java -ea -cp out LogicTests
 
-PROJECT STATE NOTE (after Task J-07)
-- Task: J-07 — Check Balance view
-- Status: Completed
-- Files changed: src/BalanceView.java, src/BankFrame.java, docs/STATE.md
-- Classes and their public methods:
-  - BalanceView: public BalanceView(BankAccount account), public void refresh()
-  - BankFrame: public void refreshAll() (also retains J-06 public methods)
-- Implementation:
-  - Replaced the balance placeholder with a themed balance card and first-display/startup caption.
-  - Registered BalanceView for refreshAll(); Check Balance refreshes the balance and caption whenever opened.
-- Known deviations or limitations: Other three views remain placeholders as scoped for this task.
-- Validation:
-  - Compile: javac -Xlint:all -encoding UTF-8 -d out src/*.java
-  - Logic tests: java -ea -cp out LogicTests
-- Compile command: javac -encoding UTF-8 -d out src/*.java
-- Run command: java -cp out BankApp
-- Logic test command: java -ea -cp out LogicTests
 PROJECT STATE (after Task J-04)
 - Task: J-04 — Theme (colors, fonts, spacing)
 - Status: Completed
@@ -353,5 +336,70 @@ PROJECT STATE (after Task J-12)
 - Run command: java -cp out BankApp
 - Logic test command: java -ea -cp out LogicTests
 - GUI smoke test command: java -ea -cp out GuiSmokeTest
+
+PROJECT STATE (after Task J-13)
+- Task: J-13 — Polish, documentation, code cleanup, and submission preparation
+- Status: Completed
+- Files changed:
+  - src/BankApp.java (added required header comment with project name "Simple Bank" and group placeholder "<group name>", Javadoc comments)
+  - src/AmountResult.java (removed duplicate unused record-style accessors centavos() and errorMessage(), retained getCentavos() and getErrorMessage(), added Javadoc comments)
+  - src/DepositView.java (standardized on getErrorMessage() and getCentavos(), added method Javadoc comments)
+  - src/WithdrawView.java (standardized on getErrorMessage() and getCentavos(), added method Javadoc comments)
+  - src/BankFrame.java (removed dead createPlaceholder method, added method and constructor Javadoc comments)
+  - src/HistoryView.java (removed unused imports Font, Box, BoxLayout, added method Javadoc comments)
+  - src/MoneyUtil.java (removed dead alias constants MSG_*, added method Javadoc comments)
+  - src/AmountField.java (added method Javadoc comments)
+  - src/AppButton.java (added method Javadoc comments)
+  - src/BalanceView.java (added class and method Javadoc comments)
+  - src/BankAccount.java (added method Javadoc comments)
+  - src/GuiSmokeTest.java (added method Javadoc comments)
+  - src/LogicTests.java (added method Javadoc comments)
+  - src/MessageBox.java (added method Javadoc comments)
+  - src/NavItem.java (added method Javadoc comments)
+  - src/Refreshable.java (added interface and method Javadoc comments)
+  - src/RoundedPanel.java (added method Javadoc comments)
+  - src/Theme.java (added method Javadoc comments)
+  - src/Transaction.java (added record component Javadoc comments)
+  - src/TransactionType.java (added constructor and method Javadoc comments)
+  - src/ViewHeader.java (added constructor and method Javadoc comments)
+  - README.md (rewritten with full overview, requirements, build/run steps, runnable JAR creation, test commands, PRD 9.2 color palette table, PRD 8 program structure table, and PRD 11 programming concepts table)
+  - DEMO.md (created 2-minute demo script with exact clicks/inputs and proof points)
+  - docs/STATE.md (removed misplaced duplicate J-07 snippet, appended J-13 state note)
+- Classes and their public methods now (including package-private test hooks):
+  - BankApp: public static void main(String[] args)
+  - BankAccount: public long getBalance(), public void deposit(long amountCentavos), public boolean withdraw(long amountCentavos), public List<Transaction> getTransactions()
+  - Transaction: record components type, amountCentavos, balanceAfterCentavos
+  - TransactionType: enum values DEPOSIT, WITHDRAWAL; public String getLabel()
+  - AmountResult: public static AmountResult ok(long centavos), public static AmountResult error(String message), public boolean isValid(), public long getCentavos(), public String getErrorMessage()
+  - MoneyUtil: public static String formatMoney(long centavos), public static AmountResult validateAmount(String text)
+  - Theme: public static Font fontBrand(), public static Font fontViewTitle(), public static Font fontSubtitle(), public static Font fontCardTitle(), public static Font fontBody(), public static Font fontBodyBold(), public static Font fontBalance(), public static void applyGlobalDefaults(), public static void enableAntialiasing(Graphics2D g)
+  - RoundedPanel: public RoundedPanel(Color fill, int radius, boolean drawShadowAndBorder), public Insets getInsets()
+  - AppButton: public AppButton(String text, boolean primary), public boolean isPrimary(), public Dimension getPreferredSize()
+  - AmountField: public AmountField(), public void setErrorState(boolean errorState), public boolean isErrorState(), public String getText(), public void setText(String text), public boolean requestFocusInWindow(), public void focusField(), public void selectAllAndFocus(), public void addEnterListener(ActionListener listener), public void addChangeListener(Runnable listener), public void setAccessibleName(String name), public Dimension getPreferredSize(), public Dimension getMinimumSize()
+  - MessageBox: public MessageBox(), public void showError(String message), public void showSuccess(String message), public void clear(), String getMessageText(), public Dimension getPreferredSize(), public Dimension getMinimumSize()
+  - ViewHeader: public ViewHeader(String title, String subtitle), public String getTitle(), public String getSubtitle()
+  - NavItem: public NavItem(int number, String label), public void setSelected(boolean selected)
+  - Refreshable: void refresh()
+  - BalanceView: public BalanceView(BankAccount account), public void refresh()
+  - DepositView: public DepositView(BankAccount account, Runnable onBalanceChanged), public void focusAmountField(), public void refresh(), void setAmountText(String text), String getAmountText(), void submitDeposit(), String getMessageText(), boolean isErrorState()
+  - WithdrawView: public WithdrawView(BankAccount account, Runnable onBalanceChanged), public void focusAmountField(), public void refresh(), void setAmountText(String text), String getAmountText(), void submitWithdraw(), String getMessageText(), boolean isErrorState()
+  - HistoryView: public HistoryView(BankAccount account), public void refresh(), int getTableRowCount(), Object getCellValue(int row, int col), String getCaptionText()
+  - BankFrame: public BankFrame(), public void showView(String view), public void handleCheckBalance(), public void refreshAll(), public void handleDeposit(), public void handleWithdraw(), public void handleViewHistory(), public void confirmExit(), BankAccount getBankAccount(), DepositView getDepositView(), WithdrawView getWithdrawView(), HistoryView getHistoryView(), BalanceView getBalanceView()
+  - LogicTests: public static void main(String[] args)
+  - GuiSmokeTest: public static void main(String[] args)
+- Implementation:
+  - Cleaned up unused imports, dead methods (createPlaceholder), dead constants (MSG_*), and duplicate accessors (AmountResult.centavos() and errorMessage()).
+  - Added short Javadoc comments above every class and every method (what it does, @param, @return).
+  - Maintained exact behavior, wording, colors, and layout across all views and dialogs.
+- Known deviations or limitations: None.
+- Validation:
+  - Compile: javac -Xlint:all -encoding UTF-8 -d out src/*.java — succeeded with 0 errors, 0 warnings.
+  - Logic tests: java -ea -cp out LogicTests — 85 passed, 0 failed.
+  - GUI smoke test: java -ea -cp out GuiSmokeTest — 59 passed, 0 failed.
+- Compile command: javac -Xlint:all -encoding UTF-8 -d out src/*.java
+- Run command: java -cp out BankApp
+- Logic test command: java -ea -cp out LogicTests
+- GUI smoke test command: java -ea -cp out GuiSmokeTest
+
 
 

@@ -51,6 +51,9 @@ public class BankFrame extends JFrame {
     private final HistoryView historyView;
     private final List<Refreshable> refreshableViews;
 
+    /**
+     * Constructs the main application frame, setting up the sidebar, content panels, and shortcuts.
+     */
     @SuppressWarnings("this-escape")
     public BankFrame() {
         super("Simple Bank");
@@ -123,6 +126,16 @@ public class BankFrame extends JFrame {
         registerShortcut(inputMap, actionMap, KeyEvent.VK_NUMPAD5, menuMask, "openExitNum", this::confirmExit);
     }
 
+    /**
+     * Binds a keyboard stroke to an executable action on the input and action maps.
+     *
+     * @param inputMap the target input map
+     * @param actionMap the target action map
+     * @param keyCode the virtual key code
+     * @param modifiers the modifier mask (e.g., Ctrl or Cmd)
+     * @param key the unique action identifier
+     * @param action the callback to execute
+     */
     private void registerShortcut(InputMap inputMap, ActionMap actionMap, int keyCode, int modifiers, String key, Runnable action) {
         inputMap.put(KeyStroke.getKeyStroke(keyCode, modifiers), key);
         actionMap.put(key, new AbstractAction() {
@@ -133,6 +146,11 @@ public class BankFrame extends JFrame {
         });
     }
 
+    /**
+     * Displays the named view card and synchronizes the sidebar selection indicators.
+     *
+     * @param view name of the view card to show (BALANCE, DEPOSIT, WITHDRAW, HISTORY)
+     */
     public void showView(String view) {
         int selectedIndex;
         switch (view) {
@@ -158,52 +176,90 @@ public class BankFrame extends JFrame {
         }
     }
 
+    /**
+     * Switches to the Check Balance view and refreshes its displayed balance.
+     */
     public void handleCheckBalance() {
         showView(VIEW_BALANCE);
         balanceView.refresh();
     }
 
+    /**
+     * Refreshes all registered refreshable views with current account data.
+     */
     public void refreshAll() {
         for (Refreshable view : refreshableViews) {
             view.refresh();
         }
     }
 
+    /**
+     * Switches to the Deposit view, refreshes its balance chip, and sets input focus.
+     */
     public void handleDeposit() {
         showView(VIEW_DEPOSIT);
         depositView.refresh();
         depositView.focusAmountField();
     }
 
+    /**
+     * Switches to the Withdraw view, refreshes its balance chip, and sets input focus.
+     */
     public void handleWithdraw() {
         showView(VIEW_WITHDRAW);
         withdrawView.refresh();
         withdrawView.focusAmountField();
     }
 
-    /** Opens the Transaction History view and refreshes its table from the current account state. */
+    /**
+     * Opens the Transaction History view and refreshes its table from the current account state.
+     */
     public void handleViewHistory() {
         showView(VIEW_HISTORY);
         historyView.refresh();
     }
 
-    /** Package-private test hooks for automated smoke testing. */
+    /**
+     * Test helper returning the internal BankAccount instance.
+     *
+     * @return the BankAccount instance
+     */
     BankAccount getBankAccount() {
         return bankAccount;
     }
 
+    /**
+     * Test helper returning the DepositView instance.
+     *
+     * @return the DepositView instance
+     */
     DepositView getDepositView() {
         return depositView;
     }
 
+    /**
+     * Test helper returning the WithdrawView instance.
+     *
+     * @return the WithdrawView instance
+     */
     WithdrawView getWithdrawView() {
         return withdrawView;
     }
 
+    /**
+     * Test helper returning the HistoryView instance.
+     *
+     * @return the HistoryView instance
+     */
     HistoryView getHistoryView() {
         return historyView;
     }
 
+    /**
+     * Test helper returning the BalanceView instance.
+     *
+     * @return the BalanceView instance
+     */
     BalanceView getBalanceView() {
         return balanceView;
     }
@@ -265,6 +321,11 @@ public class BankFrame extends JFrame {
         dialog.setVisible(true);
     }
 
+    /**
+     * Builds the left sidebar panel containing branding, navigation items, and exit button.
+     *
+     * @return the constructed sidebar JPanel
+     */
     private JPanel buildSidebar() {
         JPanel sidebar = new JPanel();
         sidebar.setBackground(Theme.PRIMARY_DARK);
@@ -313,6 +374,11 @@ public class BankFrame extends JFrame {
         return sidebar;
     }
 
+    /**
+     * Builds the content container panel using CardLayout to host each application view.
+     *
+     * @return the constructed content JPanel
+     */
     private JPanel buildContent() {
         contentCards.setBackground(Theme.BACKGROUND);
         contentCards.setBorder(BorderFactory.createEmptyBorder(
@@ -323,12 +389,5 @@ public class BankFrame extends JFrame {
         contentCards.add(withdrawView, VIEW_WITHDRAW);
         contentCards.add(historyView, VIEW_HISTORY);
         return contentCards;
-    }
-
-    private JPanel createPlaceholder(String title, String subtitle) {
-        JPanel view = new JPanel(new BorderLayout());
-        view.setBackground(Theme.BACKGROUND);
-        view.add(new ViewHeader(title, subtitle), BorderLayout.NORTH);
-        return view;
     }
 }

@@ -7,6 +7,11 @@ import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+/**
+ * View 1 — Check Balance.
+ * Displays the current account balance inside a themed primary card,
+ * with startup caption and update caption on subsequent displays.
+ */
 @SuppressWarnings("serial")
 public class BalanceView extends JPanel implements Refreshable {
     private final BankAccount account;
@@ -14,6 +19,11 @@ public class BalanceView extends JPanel implements Refreshable {
     private final JLabel captionLabel;
     private boolean firstDisplay = true;
 
+    /**
+     * Constructs the Check Balance view.
+     *
+     * @param account the bank account whose balance is displayed
+     */
     @SuppressWarnings("this-escape")
     public BalanceView(BankAccount account) {
         this.account = Objects.requireNonNull(account, "account");
@@ -58,6 +68,9 @@ public class BalanceView extends JPanel implements Refreshable {
         add(Box.createVerticalGlue());
     }
 
+    /**
+     * Refreshes the displayed balance and caption label from current account data.
+     */
     @Override
     public void refresh() {
         String formattedBalance = MoneyUtil.formatMoney(account.getBalance());

@@ -27,6 +27,9 @@ public class AmountField extends JPanel {
     private final JTextField textField;
     private boolean errorState = false;
 
+    /**
+     * Constructs the AmountField with currency symbol prefix and hint text.
+     */
     @SuppressWarnings("this-escape")
     public AmountField() {
         setLayout(new BorderLayout(Theme.SP_8, 0));
@@ -89,44 +92,83 @@ public class AmountField extends JPanel {
         add(textField, BorderLayout.CENTER);
     }
 
+    /**
+     * Sets or clears the error state border rendering.
+     *
+     * @param errorState true to show error border, false for normal/focus border
+     */
     public void setErrorState(boolean errorState) {
         this.errorState = errorState;
         repaint();
     }
 
+    /**
+     * Returns whether the field is currently rendered in an error state.
+     *
+     * @return true if in error state, false otherwise
+     */
     public boolean isErrorState() {
         return errorState;
     }
 
+    /**
+     * Returns the text entered in the underlying text field.
+     *
+     * @return the entered amount text
+     */
     public String getText() {
         return textField.getText();
     }
 
+    /**
+     * Sets the text of the underlying text field and repaints.
+     *
+     * @param text new text to display
+     */
     public void setText(String text) {
         textField.setText(text);
         repaint();
     }
 
+    /**
+     * Requests keyboard focus for the inner text field.
+     *
+     * @return true if focus was successfully requested, false otherwise
+     */
     @Override
     public boolean requestFocusInWindow() {
         return textField.requestFocusInWindow();
     }
 
-    /** Requests focus directly on the underlying JTextField. */
+    /**
+     * Requests focus directly on the underlying JTextField.
+     */
     public void focusField() {
         textField.requestFocusInWindow();
     }
 
-    /** Selects all text in the field and requests focus. */
+    /**
+     * Selects all text in the field and requests focus.
+     */
     public void selectAllAndFocus() {
         textField.requestFocusInWindow();
         SwingUtilities.invokeLater(textField::selectAll);
     }
 
+    /**
+     * Adds an action listener that fires when the user presses Enter in the field.
+     *
+     * @param listener ActionListener to execute on Enter
+     */
     public void addEnterListener(ActionListener listener) {
         textField.addActionListener(listener);
     }
 
+    /**
+     * Adds a listener that fires whenever the document text changes.
+     *
+     * @param listener Runnable callback invoked on insert, remove, or change
+     */
     public void addChangeListener(Runnable listener) {
         textField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -146,21 +188,41 @@ public class AmountField extends JPanel {
         });
     }
 
+    /**
+     * Sets the accessible name on both this panel and the inner text field.
+     *
+     * @param name accessible description name
+     */
     public void setAccessibleName(String name) {
         getAccessibleContext().setAccessibleName(name);
         textField.getAccessibleContext().setAccessibleName(name);
     }
 
+    /**
+     * Returns preferred size constrained to Theme.FIELD_HEIGHT.
+     *
+     * @return preferred dimension
+     */
     @Override
     public Dimension getPreferredSize() {
         return new Dimension(super.getPreferredSize().width, Theme.FIELD_HEIGHT);
     }
 
+    /**
+     * Returns minimum size constrained to Theme.FIELD_HEIGHT.
+     *
+     * @return minimum dimension
+     */
     @Override
     public Dimension getMinimumSize() {
         return new Dimension(super.getMinimumSize().width, Theme.FIELD_HEIGHT);
     }
 
+    /**
+     * Custom painting for surface fill, focus ring, and error border.
+     *
+     * @param g graphics context
+     */
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g.create();

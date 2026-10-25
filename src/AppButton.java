@@ -24,6 +24,12 @@ public class AppButton extends JButton {
 
     private final boolean primary;
 
+    /**
+     * Constructs an AppButton with the specified label and style.
+     *
+     * @param text button label text
+     * @param primary true for primary filled style, false for outlined style
+     */
     @SuppressWarnings("this-escape")
     public AppButton(String text, boolean primary) {
         super(text);
@@ -63,10 +69,20 @@ public class AppButton extends JButton {
         });
     }
 
+    /**
+     * Checks if this button uses the primary filled style.
+     *
+     * @return true if primary style, false if outlined
+     */
     public boolean isPrimary() {
         return primary;
     }
 
+    /**
+     * Calculates the preferred size based on text width and standard padding.
+     *
+     * @return preferred button dimension
+     */
     @Override
     public Dimension getPreferredSize() {
         FontMetrics fm = getFontMetrics(Theme.fontBodyBold());
@@ -75,6 +91,11 @@ public class AppButton extends JButton {
         return new Dimension(width, Theme.BUTTON_HEIGHT);
     }
 
+    /**
+     * Custom painting for background fills, borders, hover/press feedback, and focus ring.
+     *
+     * @param g graphics context
+     */
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g.create();
@@ -142,6 +163,13 @@ public class AppButton extends JButton {
         g2.dispose();
     }
 
+    /**
+     * Blends a base color with white by a specified ratio for hover state feedback.
+     *
+     * @param c base color
+     * @param ratio ratio of white to blend (0.0 to 1.0)
+     * @return blended color
+     */
     private static Color blendWithWhite(Color c, float ratio) {
         int r = Math.min(255, (int) (c.getRed() + (255 - c.getRed()) * ratio));
         int g = Math.min(255, (int) (c.getGreen() + (255 - c.getGreen()) * ratio));

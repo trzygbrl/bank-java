@@ -15,12 +15,6 @@ public final class MoneyUtil {
     public static final String ERROR_TOO_LARGE =
             "Amount is too large. The maximum per transaction is " + CURRENCY_SYMBOL + "1,000,000,000.00.";
 
-    // Message constant aliases
-    public static final String MSG_INVALID_NUMBER = ERROR_INVALID_NUMBER;
-    public static final String MSG_MUST_BE_POSITIVE = ERROR_MUST_BE_POSITIVE;
-    public static final String MSG_MAX_TWO_DECIMALS = ERROR_MAX_TWO_DECIMALS;
-    public static final String MSG_TOO_LARGE = ERROR_TOO_LARGE;
-
     private MoneyUtil() {
         // Prevent instantiation of utility class
     }
@@ -28,6 +22,9 @@ public final class MoneyUtil {
     /**
      * Formats a centavo amount into currency display format with thousands separators.
      * Uses integer arithmetic and a loop to insert commas every 3 digits from the right.
+     *
+     * @param centavos the monetary amount in centavos
+     * @return formatted currency string (e.g. "₱5,000.00")
      */
     public static String formatMoney(long centavos) {
         long pesos = centavos / 100L;
@@ -54,6 +51,9 @@ public final class MoneyUtil {
     /**
      * Validates an amount string following PRD Section 6.5 steps 1 to 5 in exact order.
      * Never throws an exception for any input.
+     *
+     * @param text the user input string representing a monetary amount
+     * @return AmountResult containing either the validated centavos or a user-facing error message
      */
     public static AmountResult validateAmount(String text) {
         // Step 1: Trim surrounding whitespace, safely handle null
@@ -117,6 +117,12 @@ public final class MoneyUtil {
         }
     }
 
+    /**
+     * Checks if a string contains any non-zero digit between '1' and '9'.
+     *
+     * @param s string to inspect
+     * @return true if string has at least one character in '1'..'9', false otherwise
+     */
     private static boolean containsNonZeroDigit(String s) {
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);

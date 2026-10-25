@@ -26,6 +26,12 @@ public class NavItem extends JButton {
 
     private final int number;
 
+    /**
+     * Constructs a sidebar navigation item.
+     *
+     * @param number the 1-based index displayed in the circular badge
+     * @param label the display text label
+     */
     @SuppressWarnings("this-escape")
     public NavItem(int number, String label) {
         super(label);
@@ -72,12 +78,22 @@ public class NavItem extends JButton {
         });
     }
 
+    /**
+     * Updates the selected state and triggers a repaint for the active indicator.
+     *
+     * @param selected true if currently selected, false otherwise
+     */
     @Override
     public void setSelected(boolean selected) {
         super.setSelected(selected);
         repaint();
     }
 
+    /**
+     * Custom painting for background fill, mint accent bar, number badge, label, and focus ring.
+     *
+     * @param g graphics context
+     */
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D) g.create();

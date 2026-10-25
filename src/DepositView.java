@@ -24,6 +24,12 @@ public class DepositView extends JPanel implements Refreshable {
     private final AmountField amountField;
     private final MessageBox messageBox;
 
+    /**
+     * Constructs the Deposit Money view.
+     *
+     * @param account the bank account to perform deposits against
+     * @param onBalanceChanged callback invoked when a successful deposit modifies account balance
+     */
     @SuppressWarnings("this-escape")
     public DepositView(BankAccount account, Runnable onBalanceChanged) {
         this.account = Objects.requireNonNull(account, "account");
@@ -146,21 +152,26 @@ public class DepositView extends JPanel implements Refreshable {
         refresh();
     }
 
-    /** Puts keyboard focus in the amount field and selects any existing text. */
+    /**
+     * Puts keyboard focus in the amount field and selects any existing text.
+     */
     public void focusAmountField() {
         SwingUtilities.invokeLater(amountField::selectAllAndFocus);
     }
 
+    /**
+     * Validates input amount, credits the bank account on success, updates UI feedback, and alerts listeners.
+     */
     private void handleDeposit() {
         AmountResult result = MoneyUtil.validateAmount(amountField.getText());
         if (!result.isValid()) {
-            messageBox.showError(result.errorMessage());
+            messageBox.showError(result.getErrorMessage());
             amountField.setErrorState(true);
             amountField.selectAllAndFocus();
             return;
         }
 
-        account.deposit(result.centavos());
+        account.deposit(result.getCentavos());
         amountField.setText("");
         amountField.setErrorState(false);
         updateAvailableBalance();
@@ -169,6 +180,9 @@ public class DepositView extends JPanel implements Refreshable {
         onBalanceChanged.run();
     }
 
+    /**
+     * Clears the input field and feedback messages, resetting the error state and requesting focus.
+     */
     private void clearForm() {
         amountField.setText("");
         messageBox.clear();
@@ -176,34 +190,62 @@ public class DepositView extends JPanel implements Refreshable {
         amountField.selectAllAndFocus();
     }
 
+    /**
+     * Refreshes the available balance chip and clears old feedback messages.
+     */
     @Override
     public void refresh() {
         updateAvailableBalance();
         messageBox.clear();
     }
 
+    /**
+     * Updates the available balance chip text with the current account balance.
+     */
     private void updateAvailableBalance() {
         availableBalanceLabel.setText("Available balance "
                 + MoneyUtil.formatMoney(account.getBalance()));
     }
 
-    /** Package-private test hooks for automated smoke testing. */
+    /**
+     * Test helper to set the amount field text.
+     *
+     * @param text the text to set
+     */
     void setAmountText(String text) {
         amountField.setText(text);
     }
 
+    /**
+     * Test helper to retrieve the current amount field text.
+     *
+     * @return the text currently in the amount field
+     */
     String getAmountText() {
         return amountField.getText();
     }
 
+    /**
+     * Test helper to programmatically trigger the deposit action.
+     */
     void submitDeposit() {
         handleDeposit();
     }
 
+    /**
+     * Test helper to retrieve the feedback message text.
+     *
+     * @return the current message text
+     */
     String getMessageText() {
         return messageBox.getMessageText();
     }
 
+    /**
+     * Test helper to check if the amount field is in an error state.
+     *
+     * @return true if in error state, false otherwise
+     */
     boolean isErrorState() {
         return amountField.isErrorState();
     }

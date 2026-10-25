@@ -13,6 +13,12 @@ public class ViewHeader extends JPanel {
     private final JLabel titleLabel;
     private final JLabel subtitleLabel;
 
+    /**
+     * Constructs a ViewHeader with title and subtitle labels.
+     *
+     * @param title the view title string
+     * @param subtitle the view subtitle string
+     */
     @SuppressWarnings("this-escape")
     public ViewHeader(String title, String subtitle) {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -33,10 +39,20 @@ public class ViewHeader extends JPanel {
         add(subtitleLabel);
     }
 
+    /**
+     * Returns the title text.
+     *
+     * @return current title string
+     */
     public String getTitle() {
         return titleLabel.getText();
     }
 
+    /**
+     * Returns the subtitle text.
+     *
+     * @return current subtitle string
+     */
     public String getSubtitle() {
         return subtitleLabel.getText();
     }

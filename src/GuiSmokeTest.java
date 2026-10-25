@@ -13,6 +13,11 @@ public class GuiSmokeTest {
     private static int passed = 0;
     private static int failed = 0;
 
+    /**
+     * Entry point for GUI smoke testing on EDT. Exits gracefully if headless.
+     *
+     * @param args command-line arguments (not used)
+     */
     public static void main(String[] args) {
         if (GraphicsEnvironment.isHeadless()) {
             System.out.println("SKIPPED: Running in headless environment.");
@@ -35,6 +40,9 @@ public class GuiSmokeTest {
         System.exit(0);
     }
 
+    /**
+     * Executes the sequence of automated GUI smoke test cases.
+     */
     private static void runSmokeTests() {
         System.out.println("--- Starting GuiSmokeTest ---");
         BankFrame frame = new BankFrame();
@@ -124,6 +132,12 @@ public class GuiSmokeTest {
         frame.dispose();
     }
 
+    /**
+     * Asserts that a condition is true and logs the result.
+     *
+     * @param desc description of test check
+     * @param condition boolean condition to test
+     */
     private static void check(String desc, boolean condition) {
         if (condition) {
             System.out.println("PASS: " + desc);
