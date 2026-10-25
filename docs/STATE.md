@@ -79,6 +79,23 @@ PROJECT STATE (after Task J-03)
 - Run command: java -cp out BankApp
 - Logic test command: java -ea -cp out LogicTests
 
+PROJECT STATE NOTE (after Task J-07)
+- Task: J-07 — Check Balance view
+- Status: Completed
+- Files changed: src/BalanceView.java, src/BankFrame.java, docs/STATE.md
+- Classes and their public methods:
+  - BalanceView: public BalanceView(BankAccount account), public void refresh()
+  - BankFrame: public void refreshAll() (also retains J-06 public methods)
+- Implementation:
+  - Replaced the balance placeholder with a themed balance card and first-display/startup caption.
+  - Registered BalanceView for refreshAll(); Check Balance refreshes the balance and caption whenever opened.
+- Known deviations or limitations: Other three views remain placeholders as scoped for this task.
+- Validation:
+  - Compile: javac -Xlint:all -encoding UTF-8 -d out src/*.java
+  - Logic tests: java -ea -cp out LogicTests
+- Compile command: javac -encoding UTF-8 -d out src/*.java
+- Run command: java -cp out BankApp
+- Logic test command: java -ea -cp out LogicTests
 PROJECT STATE (after Task J-04)
 - Task: J-04 — Theme (colors, fonts, spacing)
 - Status: Completed

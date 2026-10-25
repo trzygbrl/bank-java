@@ -4,6 +4,8 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -25,6 +27,8 @@ public class BankFrame extends JFrame {
     private final NavItem[] navItems;
     private final CardLayout cardLayout;
     private final JPanel contentCards;
+    private final BalanceView balanceView;
+    private final List<Refreshable> refreshableViews;
 
     @SuppressWarnings("this-escape")
     public BankFrame() {
@@ -37,6 +41,9 @@ public class BankFrame extends JFrame {
                 new NavItem(4, "View Transaction History"),
                 new NavItem(5, "Exit")
         };
+        balanceView = new BalanceView(bankAccount);
+        refreshableViews = new ArrayList<>();
+        refreshableViews.add(balanceView);
         cardLayout = new CardLayout();
         contentCards = new JPanel(cardLayout);
 
@@ -54,7 +61,7 @@ public class BankFrame extends JFrame {
             }
         });
 
-        showView(VIEW_BALANCE);
+        handleCheckBalance();
     }
 
     public void showView(String view) {
@@ -84,6 +91,13 @@ public class BankFrame extends JFrame {
 
     public void handleCheckBalance() {
         showView(VIEW_BALANCE);
+        balanceView.refresh();
+    }
+
+    public void refreshAll() {
+        for (Refreshable view : refreshableViews) {
+            view.refresh();
+        }
     }
 
     public void handleDeposit() {
@@ -166,7 +180,7 @@ public class BankFrame extends JFrame {
         contentCards.setBorder(BorderFactory.createEmptyBorder(
                 Theme.SP_32, Theme.SP_32, Theme.SP_32, Theme.SP_32));
 
-        contentCards.add(createPlaceholder("Check Balance", "Your account at a glance"), VIEW_BALANCE);
+        contentCards.add(balanceView, VIEW_BALANCE);
         contentCards.add(createPlaceholder("Deposit Money", "Add funds to your account"), VIEW_DEPOSIT);
         contentCards.add(createPlaceholder("Withdraw Money", "Take funds from your account"), VIEW_WITHDRAW);
         contentCards.add(createPlaceholder(
