@@ -79,23 +79,6 @@ PROJECT STATE (after Task J-03)
 - Run command: java -cp out BankApp
 - Logic test command: java -ea -cp out LogicTests
 
-PROJECT STATE NOTE (after Task J-07)
-- Task: J-07 — Check Balance view
-- Status: Completed
-- Files changed: src/BalanceView.java, src/BankFrame.java, docs/STATE.md
-- Classes and their public methods:
-  - BalanceView: public BalanceView(BankAccount account), public void refresh()
-  - BankFrame: public void refreshAll() (also retains J-06 public methods)
-- Implementation:
-  - Replaced the balance placeholder with a themed balance card and first-display/startup caption.
-  - Registered BalanceView for refreshAll(); Check Balance refreshes the balance and caption whenever opened.
-- Known deviations or limitations: Other three views remain placeholders as scoped for this task.
-- Validation:
-  - Compile: javac -Xlint:all -encoding UTF-8 -d out src/*.java
-  - Logic tests: java -ea -cp out LogicTests
-- Compile command: javac -encoding UTF-8 -d out src/*.java
-- Run command: java -cp out BankApp
-- Logic test command: java -ea -cp out LogicTests
 PROJECT STATE (after Task J-04)
 - Task: J-04 — Theme (colors, fonts, spacing)
 - Status: Completed
@@ -198,6 +181,41 @@ PROJECT STATE NOTE (after Task J-06)
 - Run command: java -cp out BankApp
 - Logic test command: java -ea -cp out LogicTests
 
+PROJECT STATE NOTE (after Task J-07)
+- Task: J-07 — Check Balance view
+- Status: Completed
+- Files changed: src/BalanceView.java, src/BankFrame.java, docs/STATE.md
+- Classes and their public methods:
+  - BalanceView: public BalanceView(BankAccount account), public void refresh()
+  - BankFrame: public void refreshAll() (also retains J-06 public methods)
+- Implementation:
+  - Replaced the balance placeholder with a themed balance card and first-display/startup caption.
+  - Registered BalanceView for refreshAll(); Check Balance refreshes the balance and caption whenever opened.
+- Known deviations or limitations: Other three views remain placeholders as scoped for that task.
+- Validation:
+  - Compile: javac -Xlint:all -encoding UTF-8 -d out src/*.java
+  - Logic tests: java -ea -cp out LogicTests
+- Compile command: javac -encoding UTF-8 -d out src/*.java
+- Run command: java -cp out BankApp
+- Logic test command: java -ea -cp out LogicTests
+
+PROJECT STATE NOTE (after Task J-08)
+- Task: J-08 — Deposit view
+- Status: Completed
+- Files changed: src/DepositView.java, src/BankFrame.java, docs/STATE.md
+- Classes and their public methods:
+  - DepositView: public DepositView(BankAccount account, Runnable onBalanceChanged), public void refresh()
+  - BankFrame: public void handleDeposit(), public void refreshAll() (also retains earlier public methods)
+- Implementation:
+  - Replaced the Deposit placeholder with the themed amount-entry card, available-balance chip, inline feedback, validation, and clear/deposit actions.
+  - Successful deposits update the account, chip, success message, and other registered balance views. Editing, clearing, and reopening the view clear feedback.
+- Known deviations or limitations: Withdraw and History views remain placeholders as scoped for this task.
+- Validation:
+  - Compile: javac -Xlint:all -encoding UTF-8 -d out src/*.java (succeeded without warnings)
+  - Logic tests: java -ea -cp out LogicTests (85 passed, 0 failed)
+- Compile command: javac -encoding UTF-8 -d out src/*.java
+- Run command: java -cp out BankApp
+- Logic test command: java -ea -cp out LogicTests
 
 
 
