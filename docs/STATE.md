@@ -401,5 +401,89 @@ PROJECT STATE (after Task J-13)
 - Logic test command: java -ea -cp out LogicTests
 - GUI smoke test command: java -ea -cp out GuiSmokeTest
 
+PROJECT STATE (Sidebar Navigation Layout Fix)
+- Task: Fix sidebar navigation button positioning
+- Status: Completed
+- Files: src/BankFrame.java, src/BankApp.java, docs/STATE.md
+- Classes and their public methods now:
+  - BankApp: public static void main(String[] args)
+  - BankAccount: public long getBalance(), public void deposit(long amountCentavos), public boolean withdraw(long amountCentavos), public List<Transaction> getTransactions()
+  - Transaction: record components type, amountCentavos, balanceAfterCentavos
+  - TransactionType: enum values DEPOSIT, WITHDRAWAL; public String getLabel()
+  - AmountResult: public static AmountResult ok(long centavos), public static AmountResult error(String message), public boolean isValid(), public long getCentavos(), public String getErrorMessage()
+  - MoneyUtil: public static String formatMoney(long centavos), public static AmountResult validateAmount(String text)
+  - Theme: public static Font fontBrand(), public static Font fontViewTitle(), public static Font fontSubtitle(), public static Font fontCardTitle(), public static Font fontBody(), public static Font fontBodyBold(), public static Font fontBalance(), public static void applyGlobalDefaults(), public static void enableAntialiasing(Graphics2D g)
+  - RoundedPanel: public RoundedPanel(Color fill, int radius, boolean drawShadowAndBorder), public Insets getInsets()
+  - AppButton: public AppButton(String text, boolean primary), public boolean isPrimary(), public Dimension getPreferredSize()
+  - AmountField: public AmountField(), public void setErrorState(boolean errorState), public boolean isErrorState(), public String getText(), public void setText(String text), public boolean requestFocusInWindow(), public void focusField(), public void selectAllAndFocus(), public void addEnterListener(ActionListener listener), public void addChangeListener(Runnable listener), public void setAccessibleName(String name), public Dimension getPreferredSize(), public Dimension getMinimumSize()
+  - MessageBox: public MessageBox(), public void showError(String message), public void showSuccess(String message), public void clear(), String getMessageText(), public Dimension getPreferredSize(), public Dimension getMinimumSize()
+  - ViewHeader: public ViewHeader(String title, String subtitle), public String getTitle(), public String getSubtitle()
+  - NavItem: public NavItem(int number, String label), public void setSelected(boolean selected)
+  - Refreshable: void refresh()
+  - BalanceView: public BalanceView(BankAccount account), public void refresh()
+  - DepositView: public DepositView(BankAccount account, Runnable onBalanceChanged), public void focusAmountField(), public void refresh(), void setAmountText(String text), String getAmountText(), void submitDeposit(), String getMessageText(), boolean isErrorState()
+  - WithdrawView: public WithdrawView(BankAccount account, Runnable onBalanceChanged), public void focusAmountField(), public void refresh(), void setAmountText(String text), String getAmountText(), void submitWithdraw(), String getMessageText(), boolean isErrorState()
+  - HistoryView: public HistoryView(BankAccount account), public void refresh(), int getTableRowCount(), Object getCellValue(int row, int col), String getCaptionText()
+  - BankFrame: public BankFrame(), public void showView(String view), public void handleCheckBalance(), public void refreshAll(), public void handleDeposit(), public void handleWithdraw(), public void handleViewHistory(), public void confirmExit(), BankAccount getBankAccount(), DepositView getDepositView(), WithdrawView getWithdrawView(), HistoryView getHistoryView(), BalanceView getBalanceView()
+  - LogicTests: public static void main(String[] args)
+  - GuiSmokeTest: public static void main(String[] args)
+- Changes:
+  - In src/BankFrame.java, capped the brand header panel's maximum height to its preferred height (`new Dimension(Theme.SIDEBAR_WIDTH, brand.getPreferredSize().height)`) instead of `Integer.MAX_VALUE`. This allows the vertical glue below item 4 to expand as intended, positioning navigation items 1 to 4 right beneath the brand header at the top and anchoring Exit at the bottom (PRD §9.4).
+  - In src/BankApp.java, converted dangling file-level doc comment before imports to a block comment, clearing javac [dangling-doc-comments] warning.
+- Known problems or deviations from the PRD: None.
+- Validation:
+  - Compile: javac -Xlint:all -encoding UTF-8 -d out src/*.java (0 errors, 0 warnings).
+  - Logic tests: java -ea -cp out LogicTests (85 passed, 0 failed).
+  - GUI smoke test: java -cp out GuiSmokeTest (59 passed, 0 failed).
+- Compile command: javac -Xlint:all -encoding UTF-8 -d out src/*.java
+- Run command: java -cp out BankApp
+- Logic test command: java -ea -cp out LogicTests
+- GUI smoke test command: java -ea -cp out GuiSmokeTest
+
+PROJECT STATE (SimplyBank Branding Customization)
+- Task: Branding text customization (SimplyBank and by JAKLAT Inc.)
+- Status: Completed (intentional deviation per user instruction)
+- Files: src/BankFrame.java, docs/STATE.md
+- Classes and their public methods now:
+  - BankApp: public static void main(String[] args)
+  - BankAccount: public long getBalance(), public void deposit(long amountCentavos), public boolean withdraw(long amountCentavos), public List<Transaction> getTransactions()
+  - Transaction: record components type, amountCentavos, balanceAfterCentavos
+  - TransactionType: enum values DEPOSIT, WITHDRAWAL; public String getLabel()
+  - AmountResult: public static AmountResult ok(long centavos), public static AmountResult error(String message), public boolean isValid(), public long getCentavos(), public String getErrorMessage()
+  - MoneyUtil: public static String formatMoney(long centavos), public static AmountResult validateAmount(String text)
+  - Theme: public static Font fontBrand(), public static Font fontViewTitle(), public static Font fontSubtitle(), public static Font fontCardTitle(), public static Font fontBody(), public static Font fontBodyBold(), public static Font fontBalance(), public static void applyGlobalDefaults(), public static void enableAntialiasing(Graphics2D g)
+  - RoundedPanel: public RoundedPanel(Color fill, int radius, boolean drawShadowAndBorder), public Insets getInsets()
+  - AppButton: public AppButton(String text, boolean primary), public boolean isPrimary(), public Dimension getPreferredSize()
+  - AmountField: public AmountField(), public void setErrorState(boolean errorState), public boolean isErrorState(), public String getText(), public void setText(String text), public boolean requestFocusInWindow(), public void focusField(), public void selectAllAndFocus(), public void addEnterListener(ActionListener listener), public void addChangeListener(Runnable listener), public void setAccessibleName(String name), public Dimension getPreferredSize(), public Dimension getMinimumSize()
+  - MessageBox: public MessageBox(), public void showError(String message), public void showSuccess(String message), public void clear(), String getMessageText(), public Dimension getPreferredSize(), public Dimension getMinimumSize()
+  - ViewHeader: public ViewHeader(String title, String subtitle), public String getTitle(), public String getSubtitle()
+  - NavItem: public NavItem(int number, String label), public void setSelected(boolean selected)
+  - Refreshable: void refresh()
+  - BalanceView: public BalanceView(BankAccount account), public void refresh()
+  - DepositView: public DepositView(BankAccount account, Runnable onBalanceChanged), public void focusAmountField(), public void refresh(), void setAmountText(String text), String getAmountText(), void submitDeposit(), String getMessageText(), boolean isErrorState()
+  - WithdrawView: public WithdrawView(BankAccount account, Runnable onBalanceChanged), public void focusAmountField(), public void refresh(), void setAmountText(String text), String getAmountText(), void submitWithdraw(), String getMessageText(), boolean isErrorState()
+  - HistoryView: public HistoryView(BankAccount account), public void refresh(), int getTableRowCount(), Object getCellValue(int row, int col), String getCaptionText()
+  - BankFrame: public BankFrame(), public void showView(String view), public void handleCheckBalance(), public void refreshAll(), public void handleDeposit(), public void handleWithdraw(), public void handleViewHistory(), public void confirmExit(), BankAccount getBankAccount(), DepositView getDepositView(), WithdrawView getWithdrawView(), HistoryView getHistoryView(), BalanceView getBalanceView()
+  - LogicTests: public static void main(String[] args)
+  - GuiSmokeTest: public static void main(String[] args)
+- Changes:
+  - In src/BankFrame.java:
+    - Updated window title from "Simple Bank" to "SimplyBank".
+    - Updated Exit dialog title from "Exit Simple Bank" to "Exit SimplyBank".
+    - Updated sidebar branding title from "Simple Bank" to "SimplyBank" and caption from "Personal Banking" to "by JAKLAT Inc.".
+- Known problems or deviations from the PRD:
+  - Intentional deviation requested by user: Window title, exit dialog title, and sidebar brand name use "SimplyBank" instead of "Simple Bank" (deviates from PRD Section 5, UI-4, and Section 9.5).
+  - Sidebar subtitle/caption uses "by JAKLAT Inc." instead of "Personal Banking" (deviates from PRD UI-4).
+- Validation:
+  - Compile: javac -Xlint:all -encoding UTF-8 -d out src/*.java (0 errors, 0 warnings).
+  - Logic tests: java -ea -cp out LogicTests (85 passed, 0 failed).
+  - GUI smoke test: java -cp out GuiSmokeTest (59 passed, 0 failed).
+- Compile command: javac -Xlint:all -encoding UTF-8 -d out src/*.java
+- Run command: java -cp out BankApp
+- Logic test command: java -ea -cp out LogicTests
+- GUI smoke test command: java -ea -cp out GuiSmokeTest
+
+
+
 
 

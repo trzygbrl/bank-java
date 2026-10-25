@@ -56,7 +56,7 @@ public class BankFrame extends JFrame {
      */
     @SuppressWarnings("this-escape")
     public BankFrame() {
-        super("Simple Bank");
+        super("SimplyBank");
         bankAccount = new BankAccount();
         navItems = new NavItem[] {
                 new NavItem(1, "Check Balance"),
@@ -269,7 +269,7 @@ public class BankFrame extends JFrame {
      * primary Exit and outlined Stay buttons, Stay focused as default, and Esc returning to app.
      */
     public void confirmExit() {
-        JDialog dialog = new JDialog(this, "Exit Simple Bank", true);
+        JDialog dialog = new JDialog(this, "Exit SimplyBank", true);
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
         JPanel content = new JPanel();
@@ -337,17 +337,17 @@ public class BankFrame extends JFrame {
         brand.setLayout(new BoxLayout(brand, BoxLayout.Y_AXIS));
         brand.setBorder(BorderFactory.createEmptyBorder(Theme.SP_24, Theme.SP_24, Theme.SP_32, Theme.SP_16));
         brand.setAlignmentX(LEFT_ALIGNMENT);
-        brand.setMaximumSize(new Dimension(Theme.SIDEBAR_WIDTH, Integer.MAX_VALUE));
 
-        JLabel brandName = new JLabel("Simple Bank");
+        JLabel brandName = new JLabel("SimplyBank");
         brandName.setFont(Theme.fontBrand());
         brandName.setForeground(Theme.ON_PRIMARY);
-        JLabel caption = new JLabel("Personal Banking");
+        JLabel caption = new JLabel("by JAKLAT Inc.");
         caption.setFont(Theme.fontSubtitle().deriveFont(Font.PLAIN, 12f));
         caption.setForeground(Theme.NAV_TEXT);
         brand.add(brandName);
         brand.add(Box.createVerticalStrut(Theme.SP_4));
         brand.add(caption);
+        brand.setMaximumSize(new Dimension(Theme.SIDEBAR_WIDTH, brand.getPreferredSize().height));
         sidebar.add(brand);
 
         navItems[0].addActionListener(event -> handleCheckBalance());

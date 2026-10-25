@@ -1,4 +1,4 @@
-/**
+/*
  * Simple Bank
  * Group: <group name>
  *
