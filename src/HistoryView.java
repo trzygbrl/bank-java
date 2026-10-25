@@ -286,6 +286,19 @@ public class HistoryView extends JPanel implements Refreshable {
         }
     }
 
+    /** Package-private test hooks for automated smoke testing. */
+    int getTableRowCount() {
+        return tableModel.getRowCount();
+    }
+
+    Object getCellValue(int row, int col) {
+        return tableModel.getValueAt(row, col);
+    }
+
+    String getCaptionText() {
+        return captionLabel.getText();
+    }
+
     // ── Inner renderer ─────────────────────────────────────────────────────
 
     /**

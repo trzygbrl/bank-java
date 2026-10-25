@@ -186,4 +186,25 @@ public class DepositView extends JPanel implements Refreshable {
         availableBalanceLabel.setText("Available balance "
                 + MoneyUtil.formatMoney(account.getBalance()));
     }
+
+    /** Package-private test hooks for automated smoke testing. */
+    void setAmountText(String text) {
+        amountField.setText(text);
+    }
+
+    String getAmountText() {
+        return amountField.getText();
+    }
+
+    void submitDeposit() {
+        handleDeposit();
+    }
+
+    String getMessageText() {
+        return messageBox.getMessageText();
+    }
+
+    boolean isErrorState() {
+        return amountField.isErrorState();
+    }
 }

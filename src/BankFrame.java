@@ -187,6 +187,27 @@ public class BankFrame extends JFrame {
         historyView.refresh();
     }
 
+    /** Package-private test hooks for automated smoke testing. */
+    BankAccount getBankAccount() {
+        return bankAccount;
+    }
+
+    DepositView getDepositView() {
+        return depositView;
+    }
+
+    WithdrawView getWithdrawView() {
+        return withdrawView;
+    }
+
+    HistoryView getHistoryView() {
+        return historyView;
+    }
+
+    BalanceView getBalanceView() {
+        return balanceView;
+    }
+
     /**
      * Displays a fully themed modal Exit confirmation dialog with SURFACE background,
      * primary Exit and outlined Stay buttons, Stay focused as default, and Esc returning to app.
