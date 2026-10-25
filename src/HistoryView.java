@@ -3,12 +3,9 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.util.List;
 import java.util.Objects;
 import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -56,8 +53,9 @@ public class HistoryView extends JPanel implements Refreshable {
     private final JPanel innerCards;
 
     /**
-     * Constructs the history view for the given account.
-     * Layout: ViewHeader → RoundedPanel card (caption + CardLayout[TABLE | EMPTY]).
+     * Constructs the history view for the given bank account.
+     *
+     * @param account the bank account whose transactions are displayed
      */
     @SuppressWarnings("this-escape")
     public HistoryView(BankAccount account) {
@@ -144,6 +142,8 @@ public class HistoryView extends JPanel implements Refreshable {
     /**
      * Builds the JScrollPane that wraps the table.
      * No border, SURFACE viewport, themed scrollbars, header always visible.
+     *
+     * @return the configured JScrollPane wrapping the table
      */
     private JScrollPane buildScrollPane() {
         JScrollPane scroll = new JScrollPane(table,
@@ -193,6 +193,8 @@ public class HistoryView extends JPanel implements Refreshable {
     /**
      * Builds the empty-state panel shown when there are no transactions.
      * Centered "No transactions yet." text in TEXT_MUTED — no table, no header row.
+     *
+     * @return the empty state JPanel
      */
     private JPanel buildEmptyPanel() {
         JPanel panel = new JPanel(new BorderLayout());
@@ -286,15 +288,31 @@ public class HistoryView extends JPanel implements Refreshable {
         }
     }
 
-    /** Package-private test hooks for automated smoke testing. */
+    /**
+     * Test helper returning the row count in the history table.
+     *
+     * @return current number of table rows
+     */
     int getTableRowCount() {
         return tableModel.getRowCount();
     }
 
+    /**
+     * Test helper returning the value at the specified row and column.
+     *
+     * @param row table row index
+     * @param col table column index
+     * @return cell value object
+     */
     Object getCellValue(int row, int col) {
         return tableModel.getValueAt(row, col);
     }
 
+    /**
+     * Test helper returning the caption label text.
+     *
+     * @return current caption string
+     */
     String getCaptionText() {
         return captionLabel.getText();
     }
@@ -310,6 +328,17 @@ public class HistoryView extends JPanel implements Refreshable {
      */
     private static final class BodyRenderer extends DefaultTableCellRenderer {
 
+        /**
+         * Configures and returns the component used for rendering each body cell.
+         *
+         * @param tbl the JTable being rendered
+         * @param value cell value
+         * @param isSelected whether cell is selected
+         * @param hasFocus whether cell has focus
+         * @param row row index
+         * @param col column index
+         * @return configured rendering component
+         */
         @Override
         public Component getTableCellRendererComponent(
                 JTable tbl, Object value, boolean isSelected,

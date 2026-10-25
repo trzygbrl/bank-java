@@ -24,6 +24,12 @@ public class WithdrawView extends JPanel implements Refreshable {
     private final AmountField amountField;
     private final MessageBox messageBox;
 
+    /**
+     * Constructs the Withdraw Money view.
+     *
+     * @param account the bank account to perform withdrawals against
+     * @param onBalanceChanged callback invoked when a successful withdrawal modifies account balance
+     */
     @SuppressWarnings("this-escape")
     public WithdrawView(BankAccount account, Runnable onBalanceChanged) {
         this.account = Objects.requireNonNull(account, "account");
@@ -146,25 +152,30 @@ public class WithdrawView extends JPanel implements Refreshable {
         refresh();
     }
 
-    /** Puts keyboard focus in the amount field and selects any existing text. */
+    /**
+     * Puts keyboard focus in the amount field and selects any existing text.
+     */
     public void focusAmountField() {
         SwingUtilities.invokeLater(amountField::selectAllAndFocus);
     }
 
+    /**
+     * Validates input amount, checks funds, debits the bank account, and updates UI feedback.
+     */
     private void handleWithdraw() {
         AmountResult result = MoneyUtil.validateAmount(amountField.getText());
         if (!result.isValid()) {
-            messageBox.showError(result.errorMessage());
+            messageBox.showError(result.getErrorMessage());
             amountField.setErrorState(true);
             amountField.selectAllAndFocus();
             return;
         }
 
-        if (!account.withdraw(result.centavos())) {
+        if (!account.withdraw(result.getCentavos())) {
             String errorMessage = "Insufficient funds. Your balance is "
                     + MoneyUtil.formatMoney(account.getBalance())
                     + "; you cannot withdraw "
-                    + MoneyUtil.formatMoney(result.centavos()) + ".";
+                    + MoneyUtil.formatMoney(result.getCentavos()) + ".";
             messageBox.showError(errorMessage);
             amountField.setErrorState(true);
             amountField.selectAllAndFocus();
@@ -179,6 +190,9 @@ public class WithdrawView extends JPanel implements Refreshable {
         onBalanceChanged.run();
     }
 
+    /**
+     * Clears the input field and feedback messages, resetting the error state and requesting focus.
+     */
     private void clearForm() {
         amountField.setText("");
         messageBox.clear();
@@ -186,34 +200,62 @@ public class WithdrawView extends JPanel implements Refreshable {
         amountField.selectAllAndFocus();
     }
 
+    /**
+     * Refreshes the available balance chip and clears old feedback messages.
+     */
     @Override
     public void refresh() {
         updateAvailableBalance();
         messageBox.clear();
     }
 
+    /**
+     * Updates the available balance chip text with the current account balance.
+     */
     private void updateAvailableBalance() {
         availableBalanceLabel.setText("Available balance "
                 + MoneyUtil.formatMoney(account.getBalance()));
     }
 
-    /** Package-private test hooks for automated smoke testing. */
+    /**
+     * Test helper to set the amount field text.
+     *
+     * @param text the text to set
+     */
     void setAmountText(String text) {
         amountField.setText(text);
     }
 
+    /**
+     * Test helper to retrieve the current amount field text.
+     *
+     * @return the text currently in the amount field
+     */
     String getAmountText() {
         return amountField.getText();
     }
 
+    /**
+     * Test helper to programmatically trigger the withdraw action.
+     */
     void submitWithdraw() {
         handleWithdraw();
     }
 
+    /**
+     * Test helper to retrieve the feedback message text.
+     *
+     * @return the current message text
+     */
     String getMessageText() {
         return messageBox.getMessageText();
     }
 
+    /**
+     * Test helper to check if the amount field is in an error state.
+     *
+     * @return true if in error state, false otherwise
+     */
     boolean isErrorState() {
         return amountField.isErrorState();
     }

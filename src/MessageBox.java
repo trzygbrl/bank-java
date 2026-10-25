@@ -23,6 +23,9 @@ public class MessageBox extends JPanel {
     private MessageType messageType = MessageType.NONE;
     private final JTextArea textArea;
 
+    /**
+     * Constructs a MessageBox with initial empty state and reserved height.
+     */
     @SuppressWarnings("this-escape")
     public MessageBox() {
         setLayout(new BorderLayout());
@@ -46,6 +49,11 @@ public class MessageBox extends JPanel {
         add(textArea, BorderLayout.CENTER);
     }
 
+    /**
+     * Displays an error message with error background, border, and foreground colors.
+     *
+     * @param message error text to display
+     */
     public void showError(String message) {
         messageType = MessageType.ERROR;
         String text = message != null ? message : "";
@@ -57,6 +65,11 @@ public class MessageBox extends JPanel {
         repaint();
     }
 
+    /**
+     * Displays a success message with success background, border, and foreground colors.
+     *
+     * @param message success text to display
+     */
     public void showSuccess(String message) {
         messageType = MessageType.SUCCESS;
         String text = message != null ? message : "";
@@ -68,6 +81,9 @@ public class MessageBox extends JPanel {
         repaint();
     }
 
+    /**
+     * Clears any active message and hides the message box styling.
+     */
     public void clear() {
         messageType = MessageType.NONE;
         textArea.setText("");
@@ -77,23 +93,42 @@ public class MessageBox extends JPanel {
         repaint();
     }
 
-    /** Package-private test hook returning current feedback message text. */
+    /**
+     * Package-private test hook returning current feedback message text.
+     *
+     * @return current feedback text
+     */
     String getMessageText() {
         return textArea.getText();
     }
 
+    /**
+     * Returns preferred size enforcing minimum height of 48px to prevent layout shift.
+     *
+     * @return preferred dimension
+     */
     @Override
     public Dimension getPreferredSize() {
         Dimension base = super.getPreferredSize();
         return new Dimension(base.width, Math.max(48, base.height));
     }
 
+    /**
+     * Returns minimum size enforcing minimum height of 48px to prevent layout shift.
+     *
+     * @return minimum dimension
+     */
     @Override
     public Dimension getMinimumSize() {
         Dimension base = super.getMinimumSize();
         return new Dimension(base.width, Math.max(48, base.height));
     }
 
+    /**
+     * Custom painting for rounded background and 1px border.
+     *
+     * @param g graphics context
+     */
     @Override
     protected void paintComponent(Graphics g) {
         if (messageType == MessageType.NONE || textArea.getText().isEmpty()) {

@@ -53,6 +53,11 @@ public final class Theme {
     // Font Family Selection
     private static final String FONT_FAMILY = detectFontFamily();
 
+    /**
+     * Detects whether Segoe UI is available on the local system, falling back to SansSerif.
+     *
+     * @return detected font family name
+     */
     private static String detectFontFamily() {
         try {
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -72,31 +77,65 @@ public final class Theme {
         // Prevent instantiation of utility class
     }
 
-    // Font Factory Methods
+    /**
+     * Font factory for the sidebar brand title (22px bold).
+     *
+     * @return brand title Font
+     */
     public static Font fontBrand() {
         return new Font(FONT_FAMILY, Font.BOLD, 22);
     }
 
+    /**
+     * Font factory for view headers (24px bold).
+     *
+     * @return view title Font
+     */
     public static Font fontViewTitle() {
         return new Font(FONT_FAMILY, Font.BOLD, 24);
     }
 
+    /**
+     * Font factory for view subtitles (14px plain).
+     *
+     * @return subtitle Font
+     */
     public static Font fontSubtitle() {
         return new Font(FONT_FAMILY, Font.PLAIN, 14);
     }
 
+    /**
+     * Font factory for card titles (18px bold).
+     *
+     * @return card title Font
+     */
     public static Font fontCardTitle() {
         return new Font(FONT_FAMILY, Font.BOLD, 18);
     }
 
+    /**
+     * Font factory for standard body text (14px plain).
+     *
+     * @return body text Font
+     */
     public static Font fontBody() {
         return new Font(FONT_FAMILY, Font.PLAIN, 14);
     }
 
+    /**
+     * Font factory for emphasized body text and buttons (14px bold).
+     *
+     * @return bold body text Font
+     */
     public static Font fontBodyBold() {
         return new Font(FONT_FAMILY, Font.BOLD, 14);
     }
 
+    /**
+     * Font factory for the large hero balance display (40px bold).
+     *
+     * @return hero balance Font
+     */
     public static Font fontBalance() {
         return new Font(FONT_FAMILY, Font.BOLD, 40);
     }

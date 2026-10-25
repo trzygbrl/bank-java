@@ -8,6 +8,11 @@ public final class LogicTests {
     private static int passedCount = 0;
     private static int failedCount = 0;
 
+    /**
+     * Test runner main method. Executes all logic test groups and exits with status code.
+     *
+     * @param args command-line arguments (not used)
+     */
     public static void main(String[] args) {
         System.out.println("--- Starting LogicTests ---");
 
@@ -25,6 +30,12 @@ public final class LogicTests {
         }
     }
 
+    /**
+     * Asserts that a boolean condition is true.
+     *
+     * @param description test case description
+     * @param condition the condition that must evaluate to true
+     */
     private static void check(String description, boolean condition) {
         assert condition : description;
         if (condition) {
@@ -36,6 +47,13 @@ public final class LogicTests {
         }
     }
 
+    /**
+     * Asserts that an actual value equals an expected value.
+     *
+     * @param description test case description
+     * @param actual actual value obtained
+     * @param expected expected value
+     */
     private static void checkEqual(String description, Object actual, Object expected) {
         boolean match = (actual == null && expected == null) || (actual != null && actual.equals(expected));
         assert match : description + " (expected: " + expected + ", actual: " + actual + ")";
@@ -48,6 +66,9 @@ public final class LogicTests {
         }
     }
 
+    /**
+     * Tests AmountResult factory methods, error states, and accessors.
+     */
     private static void testAmountResult() {
         AmountResult okRes = AmountResult.ok(12345L);
         check("AmountResult.ok isValid", okRes.isValid());
@@ -63,6 +84,9 @@ public final class LogicTests {
         checkEqual("AmountResult.error getErrorMessage", errRes.getErrorMessage(), "Test error");
     }
 
+    /**
+     * Tests MoneyUtil.formatMoney against required cases from PRD Section 7.
+     */
     private static void testFormatMoney() {
         checkEqual("formatMoney 0", MoneyUtil.formatMoney(0L), "\u20B10.00");
         checkEqual("formatMoney 5", MoneyUtil.formatMoney(5L), "\u20B10.05");
@@ -72,6 +96,9 @@ public final class LogicTests {
         checkEqual("formatMoney 100000000000", MoneyUtil.formatMoney(100_000_000_000L), "\u20B11,000,000,000.00");
     }
 
+    /**
+     * Tests MoneyUtil.validateAmount against core required functional tests TC-05 through TC-10.
+     */
     private static void testValidateAmountRequiredCases() {
         // Valid inputs
         AmountResult r1 = MoneyUtil.validateAmount("1000");
@@ -148,6 +175,9 @@ public final class LogicTests {
         checkEqual("validateAmount null error message", rNull.getErrorMessage(), MoneyUtil.ERROR_INVALID_NUMBER);
     }
 
+    /**
+     * Tests MoneyUtil.validateAmount edge cases including large inputs, bounds, and precedence.
+     */
     private static void testValidateAmountEdgeCases() {
         // Very long numeric input without throwing
         AmountResult rHugeDigits = MoneyUtil.validateAmount("1234567890123456789012345678901234567890");
@@ -200,6 +230,9 @@ public final class LogicTests {
         checkEqual("validateAmount '+500' error is invalid-number", rPlusSign.getErrorMessage(), MoneyUtil.ERROR_INVALID_NUMBER);
     }
 
+    /**
+     * Tests BankAccount state transitions, starting balance, deposits, withdrawals, and immutability.
+     */
     private static void testBankAccountRegression() {
         BankAccount account = new BankAccount();
 
