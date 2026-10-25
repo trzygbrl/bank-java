@@ -30,6 +30,7 @@ public class BankFrame extends JFrame {
     private final BalanceView balanceView;
     private final DepositView depositView;
     private final WithdrawView withdrawView;
+    private final HistoryView historyView;
     private final List<Refreshable> refreshableViews;
 
     @SuppressWarnings("this-escape")
@@ -46,6 +47,7 @@ public class BankFrame extends JFrame {
         balanceView = new BalanceView(bankAccount);
         depositView = new DepositView(bankAccount, this::refreshAll);
         withdrawView = new WithdrawView(bankAccount, this::refreshAll);
+        historyView = new HistoryView(bankAccount);
         refreshableViews = new ArrayList<>();
         refreshableViews.add(balanceView);
         cardLayout = new CardLayout();
@@ -114,8 +116,10 @@ public class BankFrame extends JFrame {
         withdrawView.refresh();
     }
 
+    /** Opens the Transaction History view and refreshes its table from the current account state. */
     public void handleViewHistory() {
         showView(VIEW_HISTORY);
+        historyView.refresh();
     }
 
     public void confirmExit() {
@@ -189,8 +193,7 @@ public class BankFrame extends JFrame {
         contentCards.add(balanceView, VIEW_BALANCE);
         contentCards.add(depositView, VIEW_DEPOSIT);
         contentCards.add(withdrawView, VIEW_WITHDRAW);
-        contentCards.add(createPlaceholder(
-                "Transaction History", "All successful deposits and withdrawals"), VIEW_HISTORY);
+        contentCards.add(historyView, VIEW_HISTORY);
         return contentCards;
     }
 
