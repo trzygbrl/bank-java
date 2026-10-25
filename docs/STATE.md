@@ -252,5 +252,49 @@ PROJECT STATE NOTE (after Task J-09)
 - Run command: java -cp out BankApp
 - Logic test command: java -ea -cp out LogicTests
 
+PROJECT STATE (after Task J-10)
+- Task: J-10 — Transaction History view
+- Status: Completed
+- Files changed: src/HistoryView.java (created), src/BankFrame.java (modified), docs/STATE.md
+- Classes and their public methods now:
+  - HistoryView: public HistoryView(BankAccount account), public void refresh()
+  - BankFrame: retains all J-06 through J-09 public methods; handleViewHistory() now calls historyView.refresh()
+- All previously existing classes and their public methods are unchanged.
+- Implementation:
+  - Created src/HistoryView.java: extends JPanel, implements Refreshable. Layout follows PRD 9.5 View 4.
+    ViewHeader("Transaction History", "All successful deposits and withdrawals") at top.
+    One RoundedPanel card (SURFACE, radius 12, shadow + border) containing:
+      - Caption label "{n} transaction(s)" (TEXT_MUTED, 14 px fontBody).
+      - Inner CardLayout switching between CARD_TABLE (JTable in JScrollPane) and CARD_EMPTY
+        (centered "No transactions yet." JLabel, TEXT_MUTED).
+    Table: non-editable DefaultTableModel, columns "No.", "Type", "Amount", "Balance After".
+    Row height 40 (Theme.TABLE_ROW_HEIGHT). Horizontal grid lines only (1 px BORDER color).
+    Column reordering disabled. Selection background LAVENDER.
+    Custom header renderer: LAVENDER background, bold PRIMARY_DEEP, height 40, left/right alignment per column.
+    Custom body renderer (BodyRenderer inner class): alternating SURFACE/LAVENDER_MIST rows; No. and Type
+    left-aligned, Amount and Balance After right-aligned; 12 px horizontal padding; Type text SUCCESS for
+    "Deposit", WITHDRAWAL for "Withdrawal"; body font Theme.fontBody().
+    JScrollPane: no border, SURFACE viewport, setFillsViewportHeight(true), scrollbars themed via
+    BasicScrollBarUI subclass (LAVENDER thumb, BACKGROUND track, zero-size arrow buttons).
+    refresh() clears model, explicit for-loop over account.getTransactions(), adds rows
+    [i+1, type.getLabel(), formatMoney(amount), formatMoney(balAfter)], updates caption, shows
+    CARD_EMPTY when n==0, CARD_TABLE otherwise. Account and list never modified.
+  - Updated src/BankFrame.java: added private final HistoryView historyView field; initialized in
+    constructor; replaced HISTORY createPlaceholder() call in buildContent() with historyView;
+    handleViewHistory() now calls historyView.refresh() after showView().
+- Known deviations or limitations: none. createPlaceholder() helper remains for potential future use.
+- Validation:
+  - Compile: javac -Xlint:all -encoding UTF-8 -d out src/*.java — succeeded with zero errors, zero warnings.
+  - Logic tests: java -ea -cp out LogicTests — 85 passed, 0 failed.
+  - TC-16 data check (temporary TC16Check.java, removed after validation):
+      deposit 300_000 centavos -> row 1: 1 / Deposit / 3,000.00 / 8,000.00 PASS
+      withdraw 250_050 centavos -> row 2: 2 / Withdrawal / 2,500.50 / 5,499.50 PASS
+  - TC-23 data check: 60 consecutive deposits recorded 60 transactions correctly PASS.
+  - Visual acceptance (TC-15, TC-16, TC-23, TC-24): must be verified manually by running
+    java -cp out BankApp and walking through the view with the real window.
+- Compile command: javac -Xlint:all -encoding UTF-8 -d out src/*.java
+  (javac is at: C:\Program Files\Eclipse Adoptium\jdk-21.0.12.101-hotspot\bin\javac.exe)
+- Run command: java -cp out BankApp
+- Logic test command: java -ea -cp out LogicTests
 
 
