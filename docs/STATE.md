@@ -328,4 +328,30 @@ PROJECT STATE (after Task J-11)
 - Run command: java -cp out BankApp
 - Logic test command: java -ea -cp out LogicTests
 
+PROJECT STATE (after Task J-12)
+- Task: J-12 — Acceptance testing, GUI smoke test, and screenshot preparation
+- Status: Completed
+- Files changed: src/GuiSmokeTest.java (created), tests/GUI-TEST-LOG.md (created), docs/screens/.gitkeep (created), docs/screens/SCREENSHOTS.md (created), src/MessageBox.java (test hook), src/DepositView.java (test hooks), src/WithdrawView.java (test hooks), src/HistoryView.java (test hooks), src/BankFrame.java (test hooks), docs/STATE.md
+- Classes and their public methods (including package-private test hooks):
+  - GuiSmokeTest: public static void main(String[] args)
+  - MessageBox: added package-private `String getMessageText()` test hook
+  - DepositView: added package-private test hooks `void setAmountText(String text)`, `String getAmountText()`, `void submitDeposit()`, `String getMessageText()`, `boolean isErrorState()`
+  - WithdrawView: added package-private test hooks `void setAmountText(String text)`, `String getAmountText()`, `void submitWithdraw()`, `String getMessageText()`, `boolean isErrorState()`
+  - HistoryView: added package-private test hooks `int getTableRowCount()`, `Object getCellValue(int row, int col)`, `String getCaptionText()`
+  - BankFrame: added package-private test hooks `BankAccount getBankAccount()`, `DepositView getDepositView()`, `WithdrawView getWithdrawView()`, `HistoryView getHistoryView()`, `BalanceView getBalanceView()`
+- Implementation:
+  - Created `src/GuiSmokeTest.java`: automated, standalone GUI smoke test that runs on the Swing EDT without Robot; skips gracefully with exit code 0 if headless. Validates: deposit 1000 -> balance 600000; withdraw 2000 -> balance 400000; overdraft withdraw 99999999 is rejected and preserves balance/history; history contains exactly 2 records with exact Balance After values and table cells; invalid inputs (0, -50, abc, blank, 10.999) add zero transaction records.
+  - Created `tests/GUI-TEST-LOG.md`: markdown log table for all 27 acceptance tests from PRD section 12 (TC-01 through TC-27) with word-for-word steps and expected results, marking verified code checks as "Pass" and interactive/visual checks as "TO CHECK".
+  - Created `docs/screens/.gitkeep` and `docs/screens/SCREENSHOTS.md`: exact capture instructions for four 1000x680 screenshots (01-balance.png, 02-deposit-error.png, 03-withdraw-success.png, 04-history.png) for side-by-side parity check with Dart app (TC-29).
+  - Minimal package-private test hooks added to views and frame to support direct programmatic inspection.
+- Defects fixed: None (all existing behavior and logic passed verification without defects).
+- Validation:
+  - Compile: javac -Xlint:all -encoding UTF-8 -d out src/*.java — succeeded with 0 errors, 0 warnings.
+  - Logic tests: java -ea -cp out LogicTests — 85 passed, 0 failed.
+  - GUI smoke test: java -ea -cp out GuiSmokeTest — 59 passed, 0 failed.
+- Compile command: javac -Xlint:all -encoding UTF-8 -d out src/*.java
+- Run command: java -cp out BankApp
+- Logic test command: java -ea -cp out LogicTests
+- GUI smoke test command: java -ea -cp out GuiSmokeTest
+
 

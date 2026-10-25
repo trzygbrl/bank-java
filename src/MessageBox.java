@@ -77,6 +77,11 @@ public class MessageBox extends JPanel {
         repaint();
     }
 
+    /** Package-private test hook returning current feedback message text. */
+    String getMessageText() {
+        return textArea.getText();
+    }
+
     @Override
     public Dimension getPreferredSize() {
         Dimension base = super.getPreferredSize();
