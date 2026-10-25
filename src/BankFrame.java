@@ -1,19 +1,37 @@
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.AbstractAction;
+import javax.swing.ActionMap;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRootPane;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 
+/**
+ * Main application window for Simple Bank.
+ * Manages the fixed sidebar, view switching via CardLayout, keyboard shortcuts (Ctrl+1 to Ctrl+5),
+ * focus management, and a themed Exit confirmation dialog.
+ */
 @SuppressWarnings("serial")
 public class BankFrame extends JFrame {
     private static final long serialVersionUID = 1L;
@@ -67,7 +85,52 @@ public class BankFrame extends JFrame {
             }
         });
 
+        setupKeyboardShortcuts();
         handleCheckBalance();
+    }
+
+    /**
+     * Registers Ctrl+1 to Ctrl+5 keyboard shortcuts on the root pane
+     * so they activate even when child components (like amount text fields) have focus.
+     */
+    private void setupKeyboardShortcuts() {
+        JRootPane root = getRootPane();
+        InputMap inputMap = root.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap actionMap = root.getActionMap();
+
+        int menuMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
+
+        registerShortcut(inputMap, actionMap, KeyEvent.VK_1, menuMask, "openCheckBalance", this::handleCheckBalance);
+        registerShortcut(inputMap, actionMap, KeyEvent.VK_2, menuMask, "openDeposit", this::handleDeposit);
+        registerShortcut(inputMap, actionMap, KeyEvent.VK_3, menuMask, "openWithdraw", this::handleWithdraw);
+        registerShortcut(inputMap, actionMap, KeyEvent.VK_4, menuMask, "openHistory", this::handleViewHistory);
+        registerShortcut(inputMap, actionMap, KeyEvent.VK_5, menuMask, "openExit", this::confirmExit);
+
+        // Also register explicit CTRL_DOWN_MASK in case menuMask differs (e.g. macOS Cmd)
+        if (menuMask != InputEvent.CTRL_DOWN_MASK) {
+            registerShortcut(inputMap, actionMap, KeyEvent.VK_1, InputEvent.CTRL_DOWN_MASK, "openCheckBalanceCtrl", this::handleCheckBalance);
+            registerShortcut(inputMap, actionMap, KeyEvent.VK_2, InputEvent.CTRL_DOWN_MASK, "openDepositCtrl", this::handleDeposit);
+            registerShortcut(inputMap, actionMap, KeyEvent.VK_3, InputEvent.CTRL_DOWN_MASK, "openWithdrawCtrl", this::handleWithdraw);
+            registerShortcut(inputMap, actionMap, KeyEvent.VK_4, InputEvent.CTRL_DOWN_MASK, "openHistoryCtrl", this::handleViewHistory);
+            registerShortcut(inputMap, actionMap, KeyEvent.VK_5, InputEvent.CTRL_DOWN_MASK, "openExitCtrl", this::confirmExit);
+        }
+
+        // Support Numpad 1..5 as well
+        registerShortcut(inputMap, actionMap, KeyEvent.VK_NUMPAD1, menuMask, "openCheckBalanceNum", this::handleCheckBalance);
+        registerShortcut(inputMap, actionMap, KeyEvent.VK_NUMPAD2, menuMask, "openDepositNum", this::handleDeposit);
+        registerShortcut(inputMap, actionMap, KeyEvent.VK_NUMPAD3, menuMask, "openWithdrawNum", this::handleWithdraw);
+        registerShortcut(inputMap, actionMap, KeyEvent.VK_NUMPAD4, menuMask, "openHistoryNum", this::handleViewHistory);
+        registerShortcut(inputMap, actionMap, KeyEvent.VK_NUMPAD5, menuMask, "openExitNum", this::confirmExit);
+    }
+
+    private void registerShortcut(InputMap inputMap, ActionMap actionMap, int keyCode, int modifiers, String key, Runnable action) {
+        inputMap.put(KeyStroke.getKeyStroke(keyCode, modifiers), key);
+        actionMap.put(key, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                action.run();
+            }
+        });
     }
 
     public void showView(String view) {
@@ -109,11 +172,13 @@ public class BankFrame extends JFrame {
     public void handleDeposit() {
         showView(VIEW_DEPOSIT);
         depositView.refresh();
+        depositView.focusAmountField();
     }
 
     public void handleWithdraw() {
         showView(VIEW_WITHDRAW);
         withdrawView.refresh();
+        withdrawView.focusAmountField();
     }
 
     /** Opens the Transaction History view and refreshes its table from the current account state. */
@@ -122,20 +187,61 @@ public class BankFrame extends JFrame {
         historyView.refresh();
     }
 
+    /**
+     * Displays a fully themed modal Exit confirmation dialog with SURFACE background,
+     * primary Exit and outlined Stay buttons, Stay focused as default, and Esc returning to app.
+     */
     public void confirmExit() {
-        Object[] options = {"Exit", "Stay"};
-        int choice = JOptionPane.showOptionDialog(
-                this,
-                "Thank you for banking with us. Are you sure you want to exit?",
-                "Exit Simple Bank",
-                JOptionPane.DEFAULT_OPTION,
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                options,
-                options[1]);
-        if (choice == 0) {
-            System.exit(0);
-        }
+        JDialog dialog = new JDialog(this, "Exit Simple Bank", true);
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
+        JPanel content = new JPanel();
+        content.setBackground(Theme.SURFACE);
+        content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
+        content.setBorder(BorderFactory.createEmptyBorder(
+                Theme.SP_24, Theme.SP_32, Theme.SP_24, Theme.SP_32));
+
+        JLabel msgLabel = new JLabel("Thank you for banking with us. Are you sure you want to exit?");
+        msgLabel.setFont(Theme.fontBody());
+        msgLabel.setForeground(Theme.TEXT_PRIMARY);
+        msgLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        content.add(msgLabel);
+        content.add(Box.createVerticalStrut(Theme.SP_24));
+
+        JPanel buttonRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, Theme.SP_16, 0));
+        buttonRow.setOpaque(false);
+        buttonRow.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        AppButton exitButton = new AppButton("Exit", true);
+        AppButton stayButton = new AppButton("Stay", false);
+
+        exitButton.addActionListener(event -> System.exit(0));
+        stayButton.addActionListener(event -> dialog.dispose());
+
+        buttonRow.add(exitButton);
+        buttonRow.add(stayButton);
+        content.add(buttonRow);
+
+        dialog.setContentPane(content);
+        dialog.getRootPane().setDefaultButton(stayButton);
+
+        // Esc key closes the dialog without exiting (returns to app)
+        KeyStroke escStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
+        dialog.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(escStroke, "dismissDialog");
+        dialog.getRootPane().getActionMap()
+                .put("dismissDialog", new AbstractAction() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        dialog.dispose();
+                    }
+                });
+
+        dialog.pack();
+        dialog.setResizable(false);
+        dialog.setLocationRelativeTo(this);
+        SwingUtilities.invokeLater(stayButton::requestFocusInWindow);
+        dialog.setVisible(true);
     }
 
     private JPanel buildSidebar() {
@@ -175,9 +281,10 @@ public class BankFrame extends JFrame {
         JPanel divider = new JPanel();
         divider.setOpaque(true);
         divider.setBackground(Theme.BORDER);
-        divider.setPreferredSize(new Dimension(Theme.SIDEBAR_WIDTH - Theme.SP_32, 1));
-        divider.setMaximumSize(new Dimension(Theme.SIDEBAR_WIDTH - Theme.SP_32, 1));
-        divider.setAlignmentX(CENTER_ALIGNMENT);
+        divider.setPreferredSize(new Dimension(Theme.SIDEBAR_WIDTH, 1));
+        divider.setMinimumSize(new Dimension(Theme.SIDEBAR_WIDTH, 1));
+        divider.setMaximumSize(new Dimension(Theme.SIDEBAR_WIDTH, 1));
+        divider.setAlignmentX(LEFT_ALIGNMENT);
         sidebar.add(divider);
         sidebar.add(Box.createVerticalStrut(Theme.SP_8));
         sidebar.add(navItems[4]);

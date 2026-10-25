@@ -63,30 +63,25 @@ public class HistoryView extends JPanel implements Refreshable {
     public HistoryView(BankAccount account) {
         this.account = Objects.requireNonNull(account, "account");
         setOpaque(false);
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        setLayout(new BorderLayout(0, Theme.SP_24));
 
         // ── Header ──────────────────────────────────────────────────────────
         ViewHeader header = new ViewHeader(
                 "Transaction History",
                 "All successful deposits and withdrawals");
-        header.setAlignmentX(Component.LEFT_ALIGNMENT);
-        add(header);
-        add(Box.createVerticalStrut(Theme.SP_24));
+        add(header, BorderLayout.NORTH);
 
-        // ── Outer card panel ────────────────────────────────────────────────
+        // ── Outer card panel (fills available width and height) ─────────────
         RoundedPanel card = new RoundedPanel(Theme.SURFACE, Theme.RADIUS_CARD, true);
-        card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
+        card.setLayout(new BorderLayout(0, Theme.SP_16));
         card.setBorder(BorderFactory.createEmptyBorder(
                 Theme.SP_24, Theme.SP_24, Theme.SP_24, Theme.SP_24));
-        card.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         // Caption: "{n} transaction(s)"
         captionLabel = new JLabel("0 transaction(s)");
         captionLabel.setFont(Theme.fontBody());
         captionLabel.setForeground(Theme.TEXT_MUTED);
-        captionLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        card.add(captionLabel);
-        card.add(Box.createVerticalStrut(Theme.SP_16));
+        card.add(captionLabel, BorderLayout.NORTH);
 
         // ── Table model ─────────────────────────────────────────────────────
         tableModel = new DefaultTableModel(
@@ -105,6 +100,7 @@ public class HistoryView extends JPanel implements Refreshable {
         table.setShowGrid(false);
         table.setIntercellSpacing(new Dimension(0, 0));
         table.getTableHeader().setReorderingAllowed(false);
+        table.getAccessibleContext().setAccessibleName("Transaction History");
 
         // Disable default Metal blue selection; use LAVENDER instead
         table.setSelectionBackground(Theme.LAVENDER);
@@ -132,14 +128,12 @@ public class HistoryView extends JPanel implements Refreshable {
         innerCardLayout = new CardLayout();
         innerCards = new JPanel(innerCardLayout);
         innerCards.setOpaque(false);
-        innerCards.setAlignmentX(Component.LEFT_ALIGNMENT);
         innerCards.add(scrollPane, CARD_TABLE);
         innerCards.add(emptyPanel, CARD_EMPTY);
 
-        card.add(innerCards);
+        card.add(innerCards, BorderLayout.CENTER);
 
-        add(card);
-        add(Box.createVerticalGlue());
+        add(card, BorderLayout.CENTER);
 
         // Populate on construction so an early peek at the panel looks correct
         refresh();

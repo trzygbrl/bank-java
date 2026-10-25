@@ -31,12 +31,14 @@ public class AmountField extends JPanel {
     public AmountField() {
         setLayout(new BorderLayout(Theme.SP_8, 0));
         setOpaque(false);
+        setFocusable(false);
         setBorder(BorderFactory.createEmptyBorder(0, Theme.SP_16, 0, Theme.SP_16));
 
         // Fixed Currency Prefix Label
         JLabel prefixLabel = new JLabel(MoneyUtil.CURRENCY_SYMBOL);
         prefixLabel.setFont(Theme.fontBodyBold());
         prefixLabel.setForeground(Theme.TEXT_PRIMARY);
+        prefixLabel.setFocusable(false);
         add(prefixLabel, BorderLayout.WEST);
 
         // Inner Borderless Text Field with Placeholder Hint
@@ -62,6 +64,8 @@ public class AmountField extends JPanel {
         textField.setFont(Theme.fontBody());
         textField.setForeground(Theme.TEXT_PRIMARY);
         textField.setCaretColor(Theme.TEXT_PRIMARY);
+        textField.setSelectionColor(Theme.LAVENDER);
+        textField.setSelectedTextColor(Theme.TEXT_PRIMARY);
 
         textField.addFocusListener(new FocusAdapter() {
             @Override
@@ -103,6 +107,17 @@ public class AmountField extends JPanel {
         repaint();
     }
 
+    @Override
+    public boolean requestFocusInWindow() {
+        return textField.requestFocusInWindow();
+    }
+
+    /** Requests focus directly on the underlying JTextField. */
+    public void focusField() {
+        textField.requestFocusInWindow();
+    }
+
+    /** Selects all text in the field and requests focus. */
     public void selectAllAndFocus() {
         textField.requestFocusInWindow();
         SwingUtilities.invokeLater(textField::selectAll);
