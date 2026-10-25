@@ -297,4 +297,35 @@ PROJECT STATE (after Task J-10)
 - Run command: java -cp out BankApp
 - Logic test command: java -ea -cp out LogicTests
 
+PROJECT STATE (after Task J-11)
+- Task: J-11 — Polish: keyboard, accessibility, resizing, and visual audit
+- Status: Completed
+- Files changed: src/Theme.java, src/NavItem.java, src/AppButton.java, src/AmountField.java, src/MessageBox.java, src/DepositView.java, src/WithdrawView.java, src/HistoryView.java, src/BankFrame.java, docs/STATE.md
+- Classes and their public methods:
+  - Theme: public static final int MAX_CARD_WIDTH = 720; plus existing color constants, dimensions, font factories, and static helpers (applyGlobalDefaults, enableAntialiasing)
+  - NavItem: public NavItem(int number, String label), public void setSelected(boolean selected)
+  - AppButton: public AppButton(String text, boolean primary), public boolean isPrimary(), public Dimension getPreferredSize()
+  - AmountField: public AmountField(), public void setErrorState(boolean errorState), public boolean isErrorState(), public String getText(), public void setText(String text), public boolean requestFocusInWindow(), public void focusField(), public void selectAllAndFocus(), public void addEnterListener(ActionListener listener), public void addChangeListener(Runnable listener), public void setAccessibleName(String name), public Dimension getPreferredSize(), public Dimension getMinimumSize()
+  - MessageBox: public MessageBox(), public void showError(String message), public void showSuccess(String message), public void clear(), public Dimension getPreferredSize(), public Dimension getMinimumSize()
+  - DepositView: public DepositView(BankAccount account, Runnable onBalanceChanged), public void focusAmountField(), public void refresh()
+  - WithdrawView: public WithdrawView(BankAccount account, Runnable onBalanceChanged), public void focusAmountField(), public void refresh()
+  - HistoryView: public HistoryView(BankAccount account), public void refresh()
+  - BankFrame: public BankFrame(), public void showView(String view), public void handleCheckBalance(), public void refreshAll(), public void handleDeposit(), public void handleWithdraw(), public void handleViewHistory(), public void confirmExit()
+- Implementation:
+  - Shortcuts (UI-11): Registered Ctrl+1 through Ctrl+5 (plus Cmd on macOS and numpad 1..5) on root pane InputMap (WHEN_IN_FOCUSED_WINDOW) and ActionMap, functioning even when child text fields have focus. Any other key does nothing and shows no error (FR-F1).
+  - Focus and Enter: opening Deposit or Withdraw puts focus into the amount field (via handlers and AncestorListener). Enter in amount field submits form. NavItems and AppButtons activate on both Enter and Space. NavItems show a visible 2px MINT focus ring. Exit is never shown as selected (UI-10). On invalid input or insufficient funds, amount field retains focus with text selected (UI-9). Tab order follows visual order (amount field -> primary button -> Clear).
+  - Accessibility (UI-13): Set accessible names on every sidebar item (equal to its label), every button (equal to its label), amount fields ("Amount to deposit" and "Amount to withdraw"), and the History table ("Transaction History"). MessageBox accessible description dynamically reflects its current error or success text.
+  - Resize (UI-5, TC-25): Maintained minimum window size of 860x560. Deposit and Withdraw cards are capped at 720px max width and left-aligned on wide windows. History card and scrollable table expand to fill full available width and height via BorderLayout.
+  - Visual Audit & Theming (PRD 9.2-9.6, TC-24): Replaced JOptionPane in confirmExit() with a fully themed modal JDialog using SURFACE background, Exit (primary) and Stay (outlined) buttons, Stay as default focused button, and Escape key returning to app. Applied themed UIManager defaults for text selection (LAVENDER/TEXT_PRIMARY), caret, table selection, and tooltips. Verified all text sizes are >= 14px except the 12px "Personal Banking" caption.
+  - Visual Alignment: Aligned button row in DepositView and WithdrawView with the Amount label and amount field (using FlowLayout with 0 hgap and an explicit 16px horizontal strut between action and Clear buttons); updated BankFrame sidebar divider to span full sidebar width (240px) with LEFT_ALIGNMENT matching nav items; restored Available Balance chip to full 36px height (FlowLayout with 8px vertical and 16px horizontal padding) with dynamic maximum height and immediate balance text initialization.
+  - High-DPI: Configured antialiasing, stroke normalization, and rendering quality hints in Theme.enableAntialiasing(); verified rendering with -Dsun.java2d.uiScale=2.
+- Known deviations or limitations: None.
+- Validation:
+  - Compile: javac -Xlint:all -encoding UTF-8 -d out src/*.java — succeeded with 0 errors, 0 warnings.
+  - Logic tests: java -ea -cp out LogicTests — 85 passed, 0 failed.
+  - Automated polish test suite (tested with -Dsun.java2d.uiScale=2): verified all shortcuts, accessible names, font sizes (>= 14px except 12px caption), Enter/Space activations, card layout constraints, button row left alignment with AmountField (depositBtn.x == fieldX == labelX == 30 inside card), sidebar divider width spanning full 240px matching nav items, and balance chip full 36px height without clipping.
+- Compile command: javac -Xlint:all -encoding UTF-8 -d out src/*.java
+- Run command: java -cp out BankApp
+- Logic test command: java -ea -cp out LogicTests
+
 

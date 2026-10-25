@@ -27,6 +27,7 @@ public class MessageBox extends JPanel {
     public MessageBox() {
         setLayout(new BorderLayout());
         setOpaque(false);
+        setFocusable(false);
         setBorder(BorderFactory.createEmptyBorder(Theme.SP_8, Theme.SP_16, Theme.SP_8, Theme.SP_16));
 
         textArea = new JTextArea();
@@ -36,22 +37,33 @@ public class MessageBox extends JPanel {
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
         textArea.setFont(Theme.fontBody());
+        textArea.setSelectionColor(Theme.LAVENDER);
+        textArea.setSelectedTextColor(Theme.TEXT_PRIMARY);
+
+        getAccessibleContext().setAccessibleName("Feedback message");
+        getAccessibleContext().setAccessibleDescription("");
 
         add(textArea, BorderLayout.CENTER);
     }
 
     public void showError(String message) {
         messageType = MessageType.ERROR;
-        textArea.setText(message != null ? message : "");
+        String text = message != null ? message : "";
+        textArea.setText(text);
         textArea.setForeground(Theme.ERROR);
+        getAccessibleContext().setAccessibleDescription(text);
+        textArea.getAccessibleContext().setAccessibleDescription(text);
         revalidate();
         repaint();
     }
 
     public void showSuccess(String message) {
         messageType = MessageType.SUCCESS;
-        textArea.setText(message != null ? message : "");
+        String text = message != null ? message : "";
+        textArea.setText(text);
         textArea.setForeground(Theme.SUCCESS);
+        getAccessibleContext().setAccessibleDescription(text);
+        textArea.getAccessibleContext().setAccessibleDescription(text);
         revalidate();
         repaint();
     }
@@ -59,6 +71,8 @@ public class MessageBox extends JPanel {
     public void clear() {
         messageType = MessageType.NONE;
         textArea.setText("");
+        getAccessibleContext().setAccessibleDescription("");
+        textArea.getAccessibleContext().setAccessibleDescription("");
         revalidate();
         repaint();
     }

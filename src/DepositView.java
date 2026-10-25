@@ -7,7 +7,15 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 
+/**
+ * View 2 — Deposit Money.
+ * Provides the amount input field, real-time balance chip, inline feedback,
+ * and Deposit/Clear actions, with a 720px max card width and keyboard navigation.
+ */
 @SuppressWarnings("serial")
 public class DepositView extends JPanel implements Refreshable {
     private final BankAccount account;
@@ -28,7 +36,13 @@ public class DepositView extends JPanel implements Refreshable {
         add(header);
         add(Box.createVerticalStrut(Theme.SP_24));
 
-        RoundedPanel card = new RoundedPanel(Theme.SURFACE, Theme.RADIUS_CARD, true);
+        // Card with maximum width of 720px, left-aligned on wide windows (UI-5, TC-25)
+        RoundedPanel card = new RoundedPanel(Theme.SURFACE, Theme.RADIUS_CARD, true) {
+            @Override
+            public Dimension getMaximumSize() {
+                return new Dimension(Theme.MAX_CARD_WIDTH, getPreferredSize().height);
+            }
+        };
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
         card.setBorder(BorderFactory.createEmptyBorder(
                 Theme.SP_24, Theme.SP_24, Theme.SP_24, Theme.SP_24));
@@ -41,14 +55,31 @@ public class DepositView extends JPanel implements Refreshable {
         card.add(title);
         card.add(Box.createVerticalStrut(Theme.SP_16));
 
-        RoundedPanel balanceChip = new RoundedPanel(Theme.LAVENDER_MIST, Theme.RADIUS_CONTROL, false);
+        RoundedPanel balanceChip = new RoundedPanel(Theme.LAVENDER_MIST, Theme.RADIUS_CONTROL, false) {
+            @Override
+            public Dimension getPreferredSize() {
+                Dimension d = super.getPreferredSize();
+                return new Dimension(d.width, Math.max(36, d.height));
+            }
+
+            @Override
+            public Dimension getMinimumSize() {
+                Dimension d = super.getMinimumSize();
+                return new Dimension(d.width, Math.max(36, d.height));
+            }
+
+            @Override
+            public Dimension getMaximumSize() {
+                return new Dimension(Integer.MAX_VALUE, getPreferredSize().height);
+            }
+        };
         balanceChip.setLayout(new FlowLayout(FlowLayout.LEFT, Theme.SP_16, Theme.SP_8));
         availableBalanceLabel = new JLabel();
         availableBalanceLabel.setFont(Theme.fontBody());
         availableBalanceLabel.setForeground(Theme.TEXT_PRIMARY);
+        updateAvailableBalance();
         balanceChip.add(availableBalanceLabel);
         balanceChip.setAlignmentX(Component.LEFT_ALIGNMENT);
-        balanceChip.setMaximumSize(new Dimension(Integer.MAX_VALUE, balanceChip.getPreferredSize().height));
         card.add(balanceChip);
         card.add(Box.createVerticalStrut(Theme.SP_16));
 
@@ -72,16 +103,19 @@ public class DepositView extends JPanel implements Refreshable {
         card.add(messageBox);
         card.add(Box.createVerticalStrut(Theme.SP_16));
 
-        JPanel buttonRow = new JPanel(new FlowLayout(FlowLayout.LEFT, Theme.SP_16, 0));
+        JPanel buttonRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         buttonRow.setOpaque(false);
         buttonRow.setAlignmentX(Component.LEFT_ALIGNMENT);
+        buttonRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, Theme.BUTTON_HEIGHT));
         AppButton depositButton = new AppButton("Deposit", true);
         AppButton clearButton = new AppButton("Clear", false);
+        depositButton.getAccessibleContext().setAccessibleName("Deposit");
+        clearButton.getAccessibleContext().setAccessibleName("Clear");
         buttonRow.add(depositButton);
+        buttonRow.add(Box.createHorizontalStrut(Theme.SP_16));
         buttonRow.add(clearButton);
         card.add(buttonRow);
 
-        card.setMaximumSize(new Dimension(Integer.MAX_VALUE, card.getPreferredSize().height));
         add(card);
         add(Box.createVerticalGlue());
 
@@ -92,7 +126,29 @@ public class DepositView extends JPanel implements Refreshable {
             messageBox.clear();
             amountField.setErrorState(false);
         });
+
+        // Automatically focus amount field when view is opened / becomes visible
+        addAncestorListener(new AncestorListener() {
+            @Override
+            public void ancestorAdded(AncestorEvent event) {
+                focusAmountField();
+            }
+
+            @Override
+            public void ancestorRemoved(AncestorEvent event) {
+            }
+
+            @Override
+            public void ancestorMoved(AncestorEvent event) {
+            }
+        });
+
         refresh();
+    }
+
+    /** Puts keyboard focus in the amount field and selects any existing text. */
+    public void focusAmountField() {
+        SwingUtilities.invokeLater(amountField::selectAllAndFocus);
     }
 
     private void handleDeposit() {

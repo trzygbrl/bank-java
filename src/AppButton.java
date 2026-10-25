@@ -5,14 +5,19 @@ import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.KeyEvent;
+import javax.swing.AbstractAction;
 import javax.swing.ButtonModel;
 import javax.swing.JButton;
+import javax.swing.KeyStroke;
 
 /**
  * Custom styled button supporting PRIMARY (filled lavender) and OUTLINED styles,
- * rounded corners, hover/pressed state feedback, and keyboard focus indicator.
+ * rounded corners, hover/pressed state feedback, Enter/Space keyboard activation,
+ * and keyboard focus indicator.
  */
 public class AppButton extends JButton {
     private static final long serialVersionUID = 1L;
@@ -31,6 +36,10 @@ public class AppButton extends JButton {
         setBorderPainted(false);
         setFocusPainted(false);
         setRolloverEnabled(true);
+        setFocusable(true);
+
+        // Accessible name must be equal to its label (UI-13)
+        getAccessibleContext().setAccessibleName(text);
 
         addFocusListener(new FocusAdapter() {
             @Override
@@ -41,6 +50,15 @@ public class AppButton extends JButton {
             @Override
             public void focusLost(FocusEvent e) {
                 repaint();
+            }
+        });
+
+        // Activate with Enter key as well as Space
+        getInputMap(WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "pressOnEnter");
+        getActionMap().put("pressOnEnter", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                doClick();
             }
         });
     }
