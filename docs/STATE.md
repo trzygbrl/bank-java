@@ -217,5 +217,23 @@ PROJECT STATE NOTE (after Task J-08)
 - Run command: java -cp out BankApp
 - Logic test command: java -ea -cp out LogicTests
 
+PROJECT STATE NOTE (after Task J-09)
+- Task: J-09 — Withdraw view
+- Status: Completed
+- Files changed: src/WithdrawView.java, src/BankFrame.java, docs/STATE.md
+- Classes and their public methods:
+  - WithdrawView: public WithdrawView(BankAccount account, Runnable onBalanceChanged), public void refresh()
+  - BankFrame: public void handleWithdraw() (also retains earlier public methods)
+- Implementation:
+  - Replaced the Withdraw placeholder with the themed withdrawal form, validation, insufficient-funds handling, and clear/withdraw actions.
+  - Supports withdrawing the exact available balance; successful withdrawals update the chip and trigger registered balance-view refreshes.
+- Known deviations or limitations: Transaction History remains a placeholder as scoped for this task.
+- Validation:
+  - Compile: javac -Xlint:all -encoding UTF-8 -d out src/*.java (succeeded without warnings)
+  - Logic tests: java -ea -cp out LogicTests (85 passed, 0 failed)
+- Compile command: javac -encoding UTF-8 -d out src/*.java
+- Run command: java -cp out BankApp
+- Logic test command: java -ea -cp out LogicTests
+
 
 

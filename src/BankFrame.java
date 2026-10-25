@@ -29,6 +29,7 @@ public class BankFrame extends JFrame {
     private final JPanel contentCards;
     private final BalanceView balanceView;
     private final DepositView depositView;
+    private final WithdrawView withdrawView;
     private final List<Refreshable> refreshableViews;
 
     @SuppressWarnings("this-escape")
@@ -44,6 +45,7 @@ public class BankFrame extends JFrame {
         };
         balanceView = new BalanceView(bankAccount);
         depositView = new DepositView(bankAccount, this::refreshAll);
+        withdrawView = new WithdrawView(bankAccount, this::refreshAll);
         refreshableViews = new ArrayList<>();
         refreshableViews.add(balanceView);
         cardLayout = new CardLayout();
@@ -109,6 +111,7 @@ public class BankFrame extends JFrame {
 
     public void handleWithdraw() {
         showView(VIEW_WITHDRAW);
+        withdrawView.refresh();
     }
 
     public void handleViewHistory() {
@@ -185,7 +188,7 @@ public class BankFrame extends JFrame {
 
         contentCards.add(balanceView, VIEW_BALANCE);
         contentCards.add(depositView, VIEW_DEPOSIT);
-        contentCards.add(createPlaceholder("Withdraw Money", "Take funds from your account"), VIEW_WITHDRAW);
+        contentCards.add(withdrawView, VIEW_WITHDRAW);
         contentCards.add(createPlaceholder(
                 "Transaction History", "All successful deposits and withdrawals"), VIEW_HISTORY);
         return contentCards;
