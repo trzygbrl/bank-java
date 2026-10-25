@@ -159,6 +159,28 @@ PROJECT STATE (after Task J-05)
 - Run command: java -cp out BankApp
 - Logic test command: java -ea -cp out LogicTests
 
+PROJECT STATE NOTE (after Task J-06)
+- Task: J-06 — Main window shell, sidebar, view switching, and Exit dialog
+- Status: Completed
+- Files changed: src/Refreshable.java, src/NavItem.java, src/BankFrame.java, src/BankApp.java, docs/STATE.md
+- Classes and their public methods:
+  - Refreshable: public void refresh()
+  - NavItem: public NavItem(int number, String label), public void setSelected(boolean selected)
+  - BankFrame: public BankFrame(), public void showView(String view), public void handleCheckBalance(), public void handleDeposit(), public void handleWithdraw(), public void handleViewHistory(), public void confirmExit()
+  - BankApp: public static void main(String[] args)
+- Implementation:
+  - Added a 240 px themed sidebar with brand, five numbered navigation items, selected state and exit divider.
+  - Added a centered 1000x680 BankFrame with an 860x560 minimum size, four CardLayout placeholder views, and window-close Exit confirmation.
+  - Replaced the J-05 temporary demo and J-02 temporary logic checks with launch of BankFrame on the Swing event-dispatch thread.
+- Known deviations or limitations: The four content views are headers/placeholders only; banking interaction and view refresh behavior are outside this shell task.
+- Validation:
+  - Compile: javac -Xlint:all -encoding UTF-8 -d out src/*.java (succeeded without warnings)
+  - Logic tests: java -ea -cp out LogicTests (85 passed, 0 failed)
+  - GUI launch and visual inspection were not performed.
+- Compile command: javac -encoding UTF-8 -d out src/*.java
+- Run command: java -cp out BankApp
+- Logic test command: java -ea -cp out LogicTests
+
 
 
 
